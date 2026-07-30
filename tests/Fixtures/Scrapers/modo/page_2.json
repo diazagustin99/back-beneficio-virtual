@@ -1,0 +1,26 @@
+{
+    "data": {
+        "cards": [
+            {
+                "id": "demo-0002",
+                "type": "classic_free_content",
+                "title": "Hasta 15% en Super Demo",
+                "where": "Super Demo",
+                "short_description": "2507-Demo-SuperDemo-Presencial-15off",
+                "start_date": "2025-08-01T03:00:00.000Z",
+                "stop_date": "2026-11-01T02:59:59.999Z",
+                "days_of_week": "MJ",
+                "status": "active",
+                "promo_id": "promo-demo-0002",
+                "slug": "15off-superdemo",
+                "calculated_status": "RUNNING",
+                "categories_whitelist": {"categories": [{"map_category": 1, "sub_categories": [13, 26]}]},
+                "debit_list": ["visa_debit"],
+                "credit_list": []
+            }
+        ]
+    },
+    "metadata": {
+        "pagination": {"page": 2, "page_results": 1, "total_pages": 2, "total_results": 2}
+    }
+}

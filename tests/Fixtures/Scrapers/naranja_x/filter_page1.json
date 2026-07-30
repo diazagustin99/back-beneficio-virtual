@@ -1,0 +1,84 @@
+{
+    "data": [
+        {
+            "commerceName": "Tienda Demo Electro",
+            "backgroundImage": "https://example.com/categories/electro/banner.webp",
+            "plans": [
+                {
+                    "paymentMethods": ["credito"],
+                    "ephemeris": null,
+                    "days": {
+                        "dateTo": "31/07/2026",
+                        "weekdaysApplied": [6, 7, 1, 2, 3, 4, 5],
+                        "type": 2,
+                        "dateFrom": "25/07/2026",
+                        "datesDescription": "Desde: 25/JUL al 31/JUL"
+                    },
+                    "captureMethods": [],
+                    "status": "CURRENT",
+                    "promotionDetails": {"appliesOnline": true}
+                },
+                {
+                    "paymentMethods": ["credito"],
+                    "days": {
+                        "dateTo": "30/09/2026",
+                        "weekdaysApplied": [1],
+                        "type": 2,
+                        "dateFrom": "01/08/2026"
+                    },
+                    "captureMethods": [],
+                    "status": "UPCOMING"
+                }
+            ],
+            "subtitle": "En Tienda Demo Electro, ingresá y encontrá más beneficios.",
+            "weight": 125,
+            "logo": "https://example.com/commerces/logos/demo-electro.png",
+            "id": "demo-0000000000000001",
+            "title": "Hasta 14 cuotas cero interés",
+            "category": {
+                "sectorId": 60,
+                "name": "Electro y tecnología",
+                "id": 102,
+                "subcategory": {"name": "Electrodomésticos", "id": "27", "key": "ELECTRODOMESTICOS"},
+                "key": "ELECTRO_Y_TECNOLOGIA"
+            },
+            "urlDetail": null,
+            "url": "tienda_demo_electro",
+            "tags": [{"description": "Todos los dias", "type": "days"}],
+            "paymentMethods": ["credito"],
+            "fullUrl": "https://www.naranjax.com/promociones/ELECTRO_Y_TECNOLOGIA/ELECTRODOMESTICOS/tienda_demo_electro"
+        },
+        {
+            "commerceName": "Resto Demo Norte",
+            "backgroundImage": "https://example.com/categories/gastronomia/banner.webp",
+            "plans": [
+                {
+                    "paymentMethods": ["debito"],
+                    "days": {
+                        "dateTo": "31/12/2026",
+                        "weekdaysApplied": [5, 6],
+                        "type": 2,
+                        "dateFrom": "01/01/2026"
+                    },
+                    "captureMethods": [],
+                    "status": "CURRENT"
+                }
+            ],
+            "subtitle": "20% en Resto Demo Norte",
+            "weight": 90,
+            "logo": "https://example.com/commerces/logos/resto-demo-norte.png",
+            "id": "demo-0000000000000002",
+            "title": "20% OFF",
+            "category": {
+                "sectorId": 10,
+                "name": "Gastronomía",
+                "id": 2,
+                "key": "GASTRONOMIA"
+            },
+            "url": "resto_demo_norte",
+            "fullUrl": "https://www.naranjax.com/promociones/GASTRONOMIA/resto_demo_norte",
+            "paymentMethods": ["debito"]
+        }
+    ],
+    "info": {"page": 1, "itemsByPage": 100, "total": 2, "itemsInPage": 2}
+}

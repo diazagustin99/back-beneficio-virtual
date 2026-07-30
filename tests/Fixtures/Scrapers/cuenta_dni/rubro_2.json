@@ -1,0 +1,20 @@
+[
+    {
+        "id": 150,
+        "titulo": "GASERA DEMO",
+        "subtitulo": "TODOS LOS DIAS",
+        "porcentaje": 10,
+        "logo": "icono_garrafas",
+        "bajada": "10% en garrafas",
+        "legal": "",
+        "fecha_desde": "\/Date(1893456000000)\/",
+        "fecha_hasta": "\/Date(1898467200000)\/",
+        "url": "gaseradscreena",
+        "titulo_fecha": "",
+        "orden": 5,
+        "boton_pdf": "",
+        "oculto": 0,
+        "tipo": 1,
+        "urlPagina": null
+    }
+]

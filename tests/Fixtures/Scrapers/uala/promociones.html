@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><title>Ualá - Promociones</title></head>
+<body>
+<div id="__next"></div>
+<script id="__NEXT_DATA__" type="application/json">
+{
+  "props": {
+    "pageProps": {
+      "page": {
+        "components": [
+          {"componentName": "Navbar"},
+          {"componentName": "Hero"},
+          {
+            "componentName": "Promotions",
+            "promociones": [
+              {
+                "fields": {
+                  "brand": "Demo Rides",
+                  "previewTitle": "100% de descuento",
+                  "previewDescription": "en dos viajes",
+                  "urlDeLaPromocion": "demorides100",
+                  "promotionType": ["Descuento"],
+                  "promotionLogo": {"fields": {"file": {"url": "//images.ctfassets.net/demo/logo-rides.webp"}}},
+                  "PromotionCategory": [{"fields": {"Category": "Transporte"}}],
+                  "PromotionSpecs": [{
+                    "fields": {
+                      "previewDescripcion": "ingresando el código DEMO",
+                      "ButtonHref": "https://demo-rides.example/ar",
+                      "promotionPayment": ["Tarjeta Prepaga", "Tarjeta de Crédito"],
+                      "PromotionDays": ["Lunes", "Martes"],
+                      "PromotionDate": "31 de julio 2026",
+                      "PromotionCashback": "$15.000 por viaje",
+                      "promotionLegal": {
+                        "nodeType": "document",
+                        "content": [{"nodeType": "paragraph", "content": [{"value": "Términos y condiciones de demo."}]}]
+                      }
+                    }
+                  }]
+                }
+              },
+              {
+                "fields": {
+                  "brand": "Demo Gym",
+                  "previewTitle": "20% de cashback",
+                  "previewDescription": "en cuotas mensuales",
+                  "urlDeLaPromocion": "demogym20",
+                  "promotionType": ["Cashback"],
+                  "PromotionCategory": [{"fields": {"Category": "Salud y Bienestar"}}],
+                  "PromotionSpecs": [{
+                    "fields": {
+                      "ButtonHref": "https://demo-gym.example/ar",
+                      "promotionPayment": ["Tarjeta de Crédito"],
+                      "PromotionDays": ["Todos los días"],
+                      "PromotionDate": "15 de agosto 2026",
+                      "promotionLegal": "Términos y condiciones de demo en texto plano."
+                    }
+                  }]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+</script>
+</body>
+</html>

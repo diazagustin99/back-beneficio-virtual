@@ -1,0 +1,27 @@
+{
+    "data": {
+        "cards": [
+            {
+                "id": "demo-0001",
+                "type": "classic_free_content",
+                "title": "20% en Restó Demo",
+                "where": "Restó Demo",
+                "short_description": "2507-Demo-RestoDemo-Presencial-20off",
+                "content": {"image": {"primary_image": "https://assets.example.com/demo/resto-demo.jpg"}},
+                "start_date": "2025-07-12T03:00:00.000Z",
+                "stop_date": "2026-10-01T02:59:59.999Z",
+                "days_of_week": "LMXJVSD",
+                "status": "active",
+                "promo_id": "promo-demo-0001",
+                "slug": "20off-restodemo",
+                "calculated_status": "RUNNING",
+                "categories_whitelist": {"categories": [{"map_category": 2, "sub_categories": [12, 30]}]},
+                "debit_list": [],
+                "credit_list": ["master", "visa"]
+            }
+        ]
+    },
+    "metadata": {
+        "pagination": {"page": 1, "page_results": 1, "total_pages": 2, "total_results": 2}
+    }
+}

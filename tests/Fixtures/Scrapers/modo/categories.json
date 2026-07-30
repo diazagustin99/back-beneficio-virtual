@@ -1,0 +1,5 @@
+[
+    {"id": 1, "title": "Mercados", "slug": "mercados", "description": "Kioscos, licorerías, grandes tiendas", "sub_categories": [13, 26]},
+    {"id": 2, "title": "Gastronomía", "slug": "gastronomia", "description": "Restaurantes y bares", "sub_categories": [12, 30]},
+    {"id": 7, "title": "Hogar y Decoración", "slug": "hogar", "description": "", "sub_categories": []}
+]

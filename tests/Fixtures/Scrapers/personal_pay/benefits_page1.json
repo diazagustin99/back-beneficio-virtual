@@ -1,0 +1,51 @@
+{
+  "data": {
+    "benefits": [
+      {
+        "id": 9350,
+        "image": "https://example.com/logo.png",
+        "discounts": "20%",
+        "benefitValue": "20% de reintegro",
+        "title": "Farmacia Demo Oeste",
+        "name": "total de la compra",
+        "description": "Compra Online Exclusivo",
+        "days": ["Miércoles"],
+        "subtitle": "Miércoles.",
+        "dueDate": "2026-09-30T00:00:00.000Z",
+        "legal": "",
+        "paymentMethods": [{"id": "6", "name": "Tarjeta Visa Personal Pay"}],
+        "channelName": "Exclusivo",
+        "typeCode": "Cashback",
+        "partnerImage": "https://example.com/partner-logo.png",
+        "documentTyc": "",
+        "heading": "Farmacia",
+        "levels": [{"code": "LVL00", "name": "Todos los usuarios", "discountValue": "20%", "limitAmount": "$3000", "paymentMin": 14999}],
+        "limitAmount": "$3.000",
+        "limitAmountSubtitle": "Tope $3.000"
+      },
+      {
+        "id": 9420,
+        "image": "https://example.com/logo2.png",
+        "discounts": "15%",
+        "benefitValue": "15% de descuento",
+        "title": "Restó Demo",
+        "name": "en la carta",
+        "description": "Presencial",
+        "days": ["Viernes", "Sábado"],
+        "subtitle": "Viernes y sábado.",
+        "dueDate": "2026-12-31T00:00:00.000Z",
+        "legal": "Válido en sucursales adheridas.",
+        "paymentMethods": [{"id": "1", "name": "Tarjeta Mastercard Personal Pay"}],
+        "channelName": "General",
+        "typeCode": "Descuento",
+        "heading": "Gastronomía",
+        "levels": [{"code": "LVL00", "name": "Todos los usuarios", "discountValue": "15%", "limitAmount": "$2000", "paymentMin": 5000}],
+        "limitAmount": "$2.000",
+        "limitAmountSubtitle": "Tope $2.000"
+      }
+    ],
+    "meta": {
+      "offset": 0
+    }
+  }
+}
