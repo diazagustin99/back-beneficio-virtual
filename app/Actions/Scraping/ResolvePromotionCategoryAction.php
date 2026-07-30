@@ -15,6 +15,13 @@ class ResolvePromotionCategoryAction
 
         $slug = Str::slug($name);
 
-        return PromotionCategory::createOrFirst(['slug' => $slug], ['name' => trim($name), 'slug' => $slug]);
+        // A variant slug (e.g. "transportes") resolves to the canonical
+        // category's real name (e.g. "Transporte") instead of creating a
+        // near-duplicate — see config/category_aliases.php.
+        $canonicalName = config("category_aliases.{$slug}");
+        $name = $canonicalName ?? trim($name);
+        $slug = $canonicalName !== null ? Str::slug($canonicalName) : $slug;
+
+        return PromotionCategory::createOrFirst(['slug' => $slug], ['name' => $name, 'slug' => $slug]);
     }
 }

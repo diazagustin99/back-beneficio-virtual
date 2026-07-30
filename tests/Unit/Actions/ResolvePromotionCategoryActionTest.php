@@ -38,4 +38,27 @@ class ResolvePromotionCategoryActionTest extends TestCase
         $this->assertNull($category);
         $this->assertSame(0, PromotionCategory::count());
     }
+
+    public function test_a_known_variant_resolves_to_the_canonical_category_instead_of_a_duplicate(): void
+    {
+        config(['category_aliases.transportes' => 'Transporte']);
+
+        $category = app(ResolvePromotionCategoryAction::class)->handle('Transportes');
+
+        $this->assertSame('Transporte', $category->name);
+        $this->assertSame('transporte', $category->slug);
+        $this->assertSame(1, PromotionCategory::count());
+    }
+
+    public function test_the_variant_and_the_canonical_name_both_resolve_to_the_same_row(): void
+    {
+        config(['category_aliases.transportes' => 'Transporte']);
+        $action = app(ResolvePromotionCategoryAction::class);
+
+        $viaVariant = $action->handle('Transportes');
+        $viaCanonical = $action->handle('Transporte');
+
+        $this->assertSame($viaCanonical->id, $viaVariant->id);
+        $this->assertSame(1, PromotionCategory::count());
+    }
 }
