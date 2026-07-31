@@ -1,0 +1,65 @@
+{
+    "brandsIds": ["brand-farmademo", "brand-ropademo", "brand-combustibledemo"],
+    "promotionsData": [
+        {
+            "_id": "promo-farmademo",
+            "promotionTitle": "Farmacias",
+            "categories": [{"_id": "cat-farmacias", "label": "Farmacias"}],
+            "startDate": "2026-01-01T00:00:00.000Z",
+            "endDate": "2026-12-31T00:00:00.000Z",
+            "images": {"catalogImage": "https://cdn.example.com/farmacias.png"},
+            "incentive": {
+                "discount": {"value": 20, "cashbackLimit": 5000, "cashbackType": ["card"]},
+                "installment": {"value": []}
+            },
+            "brands": [
+                {
+                    "_id": "brand-farmademo",
+                    "title": "Farmademo",
+                    "url": "https://semananacion.com.ar/semananacion/farmademo",
+                    "media": {"catalogImage": "https://cdn.example.com/farmademo.png"}
+                }
+            ]
+        },
+        {
+            "_id": "promo-ropademo",
+            "promotionTitle": "Indumentaria",
+            "categories": [],
+            "startDate": "2026-02-01T00:00:00.000Z",
+            "endDate": "2026-06-30T00:00:00.000Z",
+            "images": {"catalogImage": "https://cdn.example.com/indumentaria.png"},
+            "incentive": {
+                "discount": {"value": 0, "cashbackLimit": null, "cashbackType": []},
+                "installment": {"type": "single", "value": [3, 6]}
+            },
+            "brands": [
+                {
+                    "_id": "brand-ropademo",
+                    "title": "Ropa Demo",
+                    "url": "https://semananacion.com.ar/semananacion/ropademo",
+                    "media": {"catalogImage": "https://cdn.example.com/ropademo.png"}
+                }
+            ]
+        },
+        {
+            "_id": "promo-combustibledemo",
+            "promotionTitle": "Combustibles",
+            "categories": [{"_id": "cat-combustibles", "label": "Combustibles"}],
+            "startDate": "2026-03-01T00:00:00.000Z",
+            "endDate": "2026-08-31T00:00:00.000Z",
+            "images": {"catalogImage": "https://cdn.example.com/combustibles.png"},
+            "incentive": {
+                "discount": {"value": 20, "cashbackLimit": 3000, "cashbackType": ["card"]},
+                "installment": {"value": []}
+            },
+            "brands": [
+                {
+                    "_id": "brand-combustibledemo",
+                    "title": "Combustible Demo",
+                    "url": "https://semananacion.com.ar/semananacion/combustibledemo",
+                    "media": {"catalogImage": "https://cdn.example.com/combustibledemo.png"}
+                }
+            ]
+        }
+    ]
+}

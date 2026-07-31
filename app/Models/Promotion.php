@@ -162,11 +162,12 @@ class Promotion extends Model
 
     /**
      * @param  Builder<Promotion>  $query
+     * @param  list<string>  $walletSlugs
      * @return Builder<Promotion>
      */
-    public function scopeForWallet(Builder $query, string $walletSlug): Builder
+    public function scopeForWallets(Builder $query, array $walletSlugs): Builder
     {
-        return $query->whereHas('wallet', fn (Builder $wallet) => $wallet->where('slug', $walletSlug));
+        return $query->whereHas('wallet', fn (Builder $wallet) => $wallet->whereIn('slug', $walletSlugs));
     }
 
     /**

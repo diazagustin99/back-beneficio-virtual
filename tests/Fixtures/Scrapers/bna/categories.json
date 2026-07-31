@@ -1,0 +1,4 @@
+[
+    {"_id": "cat-farmacias", "label": "Farmacias", "value": "farmacias"},
+    {"_id": "cat-gastronomia", "label": "Gastronomía", "value": "gastronomia"}
+]

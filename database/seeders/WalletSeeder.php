@@ -20,6 +20,8 @@ class WalletSeeder extends Seeder
             'Naranja X',
             'Cuenta DNI',
             'MODO',
+            'BNA',
+            'Brubank',
         ];
 
         foreach ($wallets as $name) {

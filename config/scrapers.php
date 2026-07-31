@@ -1,10 +1,12 @@
 <?php
 
+use App\Scrapers\Brubank\BrubankScraper;
 use App\Scrapers\CuentaDni\CuentaDniScraper;
 use App\Scrapers\MercadoPago\MercadoPagoScraper;
 use App\Scrapers\Modo\ModoScraper;
 use App\Scrapers\NaranjaX\NaranjaXScraper;
 use App\Scrapers\PersonalPay\PersonalPayScraper;
+use App\Scrapers\SemanaNacion\SemanaNacionScraper;
 use App\Scrapers\Uala\UalaScraper;
 
 return [
@@ -29,6 +31,8 @@ return [
         'naranja_x' => NaranjaXScraper::class,
         'cuenta_dni' => CuentaDniScraper::class,
         'modo' => ModoScraper::class,
+        'bna' => SemanaNacionScraper::class,
+        'brubank' => BrubankScraper::class,
     ],
 
 ];
