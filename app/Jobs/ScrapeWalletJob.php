@@ -36,7 +36,7 @@ class ScrapeWalletJob implements ShouldBeUnique, ShouldQueue
         public readonly Wallet $wallet,
         public readonly ScrapeRun $scrapeRun,
     ) {
-        $this->onQueue('scraping');
+        $this->onQueue('default');
     }
 
     public function uniqueId(): string

@@ -25,7 +25,7 @@ class DispatchDailyScrapesAction
                     'triggered_by' => $triggeredBy,
                 ]);
 
-                ScrapeWalletJob::dispatch($wallet, $scrapeRun)->onQueue('scraping');
+                ScrapeWalletJob::dispatch($wallet, $scrapeRun);
             });
     }
 }
