@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api\V1;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ListMerchantsRequest extends FormRequest
+class ListPreferenceNotificationsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,12 +23,6 @@ class ListMerchantsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'search' => ['sometimes', 'string', 'max:191'],
-            'with_discounts' => ['sometimes', 'boolean'],
-            'promotion_category_id' => ['sometimes', 'integer', 'exists:promotion_categories,id'],
-            'merchant_ids' => ['sometimes', 'array'],
-            'merchant_ids.*' => ['integer'],
-            'with_logo_first' => ['sometimes', 'boolean'],
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
         ];
     }

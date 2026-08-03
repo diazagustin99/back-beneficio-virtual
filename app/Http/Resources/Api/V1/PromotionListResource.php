@@ -22,6 +22,8 @@ class PromotionListResource extends JsonResource
             'discount_percentage' => $this->discount_percentage,
             'fixed_amount' => $this->fixed_amount,
             'cashback_percentage' => $this->cashback_percentage,
+            'installments' => $this->installments,
+            'valid_days' => $this->valid_days,
             'starts_at' => $this->starts_at?->toDateString(),
             'ends_at' => $this->ends_at?->toDateString(),
             'is_active' => $this->is_active,

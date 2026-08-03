@@ -14,7 +14,17 @@ class MerchantController extends Controller
     public function index(ListMerchantsRequest $request, ListMerchantsAction $action)
     {
         try {
-            $merchants = $action->handle($request->validated());
+            $filters = $request->validated();
+
+            if (array_key_exists('with_discounts', $filters)) {
+                $filters['with_discounts'] = $request->boolean('with_discounts');
+            }
+
+            if (array_key_exists('with_logo_first', $filters)) {
+                $filters['with_logo_first'] = $request->boolean('with_logo_first');
+            }
+
+            $merchants = $action->handle($filters);
 
             return $this->response($merchants->through(fn (Merchant $merchant) => new MerchantResource($merchant)));
         } catch (Throwable $e) {

@@ -20,13 +20,19 @@ class WalletSeeder extends Seeder
             'Naranja X',
             'Cuenta DNI',
             'MODO',
-            'BNA',
+            // Display name is the recognizable bank name, not the acronym —
+            // the slug stays `bna` on purpose (already tied to ~340 scraped
+            // promotions and every scraper/test that references this wallet).
+            ['slug' => 'bna', 'name' => 'Banco Nación'],
             'Brubank',
         ];
 
-        foreach ($wallets as $name) {
+        foreach ($wallets as $wallet) {
+            $slug = is_array($wallet) ? $wallet['slug'] : Str::slug($wallet, '_');
+            $name = is_array($wallet) ? $wallet['name'] : $wallet;
+
             Wallet::query()->updateOrCreate(
-                ['slug' => Str::slug($name, '_')],
+                ['slug' => $slug],
                 ['name' => $name, 'is_active' => true],
             );
         }
