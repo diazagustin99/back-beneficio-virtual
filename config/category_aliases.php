@@ -28,6 +28,7 @@ return [
     */
 
     'transportes' => 'Transporte',
+    'combustibles' => 'Combustible',
     'supermercado' => 'Supermercados',
     'automoviles' => 'Autos y motos',
     'electrodomesticos-y-tecnologia' => 'Electro y Tecnología',

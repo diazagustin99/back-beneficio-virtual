@@ -15,9 +15,6 @@ Schedule::command('promotions:scrape')
     ->onOneServer()
     ->runInBackground();
 
-// Una hora después del scrape diario, para que las categorías nuevas que
-// haya creado esa corrida (si trajeron un texto "variante" no visto antes)
-// queden fusionadas con su categoría canónica antes de que alguien las vea.
 Schedule::command('categories:merge-duplicates')
     ->dailyAt('04:00')
     ->timezone('America/Argentina/Buenos_Aires')
@@ -38,6 +35,14 @@ Schedule::command('merchants:merge-duplicates-promotions')
     ->withoutOverlapping()
     ->onOneServer()
     ->runInBackground();
+
+Schedule::command('promotions:deactivate-expired')
+    ->dailyAt('05:30')
+    ->timezone('America/Argentina/Buenos_Aires')
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->runInBackground();
+
 
 Schedule::command('notifications:daily-merchant-discounts')
     ->dailyAt('08:00')
