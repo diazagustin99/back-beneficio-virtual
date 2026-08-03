@@ -25,6 +25,20 @@ Schedule::command('categories:merge-duplicates')
     ->onOneServer()
     ->runInBackground();
 
+Schedule::command('merchants:merge-duplicates')
+    ->dailyAt('04:15')
+    ->timezone('America/Argentina/Buenos_Aires')
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->runInBackground();
+
+Schedule::command('merchants:merge-duplicates-promotions')
+    ->dailyAt('04:30')
+    ->timezone('America/Argentina/Buenos_Aires')
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->runInBackground();
+
 Schedule::command('notifications:daily-merchant-discounts')
     ->dailyAt('08:00')
     ->timezone('America/Argentina/Buenos_Aires')
