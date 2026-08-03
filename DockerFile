@@ -1,0 +1,53 @@
+FROM php:8.3-cli
+
+# Dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    curl \
+    ca-certificates \
+    gnupg \
+    chromium \
+    fonts-liberation \
+    libnss3 \
+    libatk-bridge2.0-0 \
+    libgtk-3-0 \
+    libgbm1 \
+    libxdamage1 \
+    libxrandr2 \
+    xdg-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+# Extensiones PHP
+RUN docker-php-ext-install \
+    pdo \
+    pdo_mysql \
+    bcmath
+
+# Node.js 22
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs
+
+# Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+WORKDIR /app
+
+COPY . .
+
+RUN composer install \
+    --no-dev \
+    --prefer-dist \
+    --no-interaction \
+    --optimize-autoloader
+
+RUN npm install
+RUN npm run build
+
+ENV BROWSERSHOT_CHROME_PATH=/usr/bin/chromium
+ENV CHROME_BIN=/usr/bin/chromium
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+
+CMD ["php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--timeout=300"]
