@@ -1,0 +1,28 @@
+{
+  "status": 200,
+  "code": 0,
+  "message": "",
+  "data": {
+    "id": "13321",
+    "title": "ATALAYA",
+    "store": "ATALAYA",
+    "locations": {
+      "Capital Federal": [
+        {
+          "street": "AV. CABILDO 2450",
+          "city": "CABA",
+          "state": "Capital Federal",
+          "shopping": ""
+        }
+      ],
+      "Gran Buenos Aires": [
+        {
+          "street": null,
+          "city": null,
+          "state": "Gran Buenos Aires",
+          "shopping": ""
+        }
+      ]
+    }
+  }
+}

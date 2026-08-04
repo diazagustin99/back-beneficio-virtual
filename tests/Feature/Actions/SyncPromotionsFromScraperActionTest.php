@@ -61,6 +61,31 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $this->assertSame(1, $scrapeRun->promotions_created);
     }
 
+    public function test_a_zero_discount_cashback_or_fixed_amount_is_stored_as_null(): void
+    {
+        $wallet = Wallet::factory()->create();
+        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+
+        app(SyncPromotionsFromScraperAction::class)->handle(
+            $wallet,
+            $scrapeRun,
+            [new PromotionDTO(
+                walletSlug: $wallet->slug,
+                merchantName: 'Almundo',
+                title: '6 CSI en Almundo',
+                discountPercentage: 0.0,
+                cashbackPercentage: 0.0,
+                fixedAmount: 0.0,
+                externalId: 'ext-1',
+            )],
+        );
+
+        $promotion = Promotion::sole();
+        $this->assertNull($promotion->discount_percentage);
+        $this->assertNull($promotion->cashback_percentage);
+        $this->assertNull($promotion->fixed_amount);
+    }
+
     public function test_change_detected_writes_snapshot_of_old_state_and_bumps_version(): void
     {
         $wallet = Wallet::factory()->create();

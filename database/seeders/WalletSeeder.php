@@ -25,6 +25,9 @@ class WalletSeeder extends Seeder
             // promotions and every scraper/test that references this wallet).
             ['slug' => 'bna', 'name' => 'Banco Nación'],
             'Brubank',
+            'Macro',
+            'Prex',
+            'ICBC',
         ];
 
         foreach ($wallets as $wallet) {

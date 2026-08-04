@@ -29,7 +29,7 @@ Schedule::command('merchants:merge-duplicates')
     ->onOneServer()
     ->runInBackground();
 
-Schedule::command('merchants:merge-duplicates-promotions')
+Schedule::command('promotions:merge-duplicates')
     ->dailyAt('04:30')
     ->timezone('America/Argentina/Buenos_Aires')
     ->withoutOverlapping()
@@ -42,7 +42,6 @@ Schedule::command('promotions:deactivate-expired')
     ->withoutOverlapping()
     ->onOneServer()
     ->runInBackground();
-
 
 Schedule::command('notifications:daily-merchant-discounts')
     ->dailyAt('08:00')

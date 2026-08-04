@@ -2,10 +2,13 @@
 
 use App\Scrapers\Brubank\BrubankScraper;
 use App\Scrapers\CuentaDni\CuentaDniScraper;
+use App\Scrapers\Icbc\IcbcScraper;
+use App\Scrapers\Macro\MacroScraper;
 use App\Scrapers\MercadoPago\MercadoPagoScraper;
 use App\Scrapers\Modo\ModoScraper;
 use App\Scrapers\NaranjaX\NaranjaXScraper;
 use App\Scrapers\PersonalPay\PersonalPayScraper;
+use App\Scrapers\Prex\PrexScraper;
 use App\Scrapers\SemanaNacion\SemanaNacionScraper;
 use App\Scrapers\Uala\UalaScraper;
 
@@ -33,6 +36,9 @@ return [
         'modo' => ModoScraper::class,
         'bna' => SemanaNacionScraper::class,
         'brubank' => BrubankScraper::class,
+        'macro' => MacroScraper::class,
+        'prex' => PrexScraper::class,
+        'icbc' => IcbcScraper::class,
     ],
 
 ];

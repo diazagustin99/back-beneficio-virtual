@@ -61,4 +61,35 @@ class ResolvePromotionCategoryActionTest extends TestCase
         $this->assertSame($viaCanonical->id, $viaVariant->id);
         $this->assertSame(1, PromotionCategory::count());
     }
+
+    public function test_a_shouting_name_without_an_alias_is_stored_in_title_case(): void
+    {
+        $category = app(ResolvePromotionCategoryAction::class)->handle('VINOS Y BODEGAS');
+
+        $this->assertSame('Vinos y Bodegas', $category->name);
+        $this->assertSame('vinos-y-bodegas', $category->slug);
+    }
+
+    public function test_a_single_word_shouting_name_is_title_cased(): void
+    {
+        $category = app(ResolvePromotionCategoryAction::class)->handle('NIÑOS');
+
+        $this->assertSame('Niños', $category->name);
+    }
+
+    public function test_a_mixed_case_name_is_never_altered(): void
+    {
+        $category = app(ResolvePromotionCategoryAction::class)->handle('Hogar y deco');
+
+        $this->assertSame('Hogar y deco', $category->name);
+    }
+
+    public function test_an_alias_takes_priority_over_shouting_case_normalization(): void
+    {
+        config(['category_aliases.super' => 'Supermercados']);
+
+        $category = app(ResolvePromotionCategoryAction::class)->handle('SUPER');
+
+        $this->assertSame('Supermercados', $category->name);
+    }
 }

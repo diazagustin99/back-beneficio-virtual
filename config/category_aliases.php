@@ -40,4 +40,18 @@ return [
     'otro' => 'Otros',
     'turismo-y-viajes' => 'Viajes y turismo',
 
+    // ICBC expone su `rubro` siempre en mayúsculas y con nombres abreviados
+    // (p. ej. "SUPER", "RESTO") — estos son los que resultaron ser la misma
+    // categoría que una ya existente, verificados igual que los de arriba.
+    'super' => 'Supermercados',
+    'moda' => 'Moda y accesorios',
+    'libreria' => 'Librerías',
+    'otros-beneficios' => 'Otros',
+    'resto' => 'Gastronomía',
+    'casa' => 'Hogar y deco',
+    'capacitacion' => 'Educación',
+    'belleza' => 'Salud y Belleza',
+    'auto' => 'Autos y motos',
+    'turismo' => 'Viajes y turismo',
+
 ];

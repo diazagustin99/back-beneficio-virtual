@@ -44,9 +44,9 @@ class UpsertPromotionFromDtoAction
                 'promotion_category_id' => $category?->id,
                 'title' => $dto->title,
                 'description' => $dto->description,
-                'discount_percentage' => $dto->discountPercentage,
-                'fixed_amount' => $dto->fixedAmount,
-                'cashback_percentage' => $dto->cashbackPercentage,
+                'discount_percentage' => $this->nullIfZero($dto->discountPercentage),
+                'fixed_amount' => $this->nullIfZero($dto->fixedAmount),
+                'cashback_percentage' => $this->nullIfZero($dto->cashbackPercentage),
                 'installments' => $dto->installments,
                 'reimbursement_cap' => $dto->reimbursementCap,
                 'minimum_purchase' => $dto->minimumPurchase,
@@ -118,5 +118,17 @@ class UpsertPromotionFromDtoAction
 
             return ['promotion' => $promotion, 'status' => $status];
         });
+    }
+
+    /**
+     * A source reporting exactly `0` for a discount/cashback/fixed-amount
+     * figure isn't "a discount of 0%" — it means the field doesn't apply to
+     * this promotion (e.g. a MODO "cuotas sin interés" promo with no
+     * discount at all). Treated the same as the field being absent, so the
+     * frontend never renders a misleading "0% OFF" badge.
+     */
+    private function nullIfZero(?float $value): ?float
+    {
+        return $value === 0.0 ? null : $value;
     }
 }

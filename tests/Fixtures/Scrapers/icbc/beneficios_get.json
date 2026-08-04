@@ -1,0 +1,77 @@
+{
+  "status": 200,
+  "code": 0,
+  "message": "",
+  "data": [
+    {
+      "id": "13023",
+      "title": "ADIDAS.COM",
+      "store": "ADIDAS.COM",
+      "heading_id": "5",
+      "date_start": "2026-07-21 00:00:00",
+      "date_end": "2026-10-27 00:00:00",
+      "days": ["MA"],
+      "text_days": "MARTES",
+      "cards": ["VISA", "MASTER"],
+      "system": [""],
+      "legal": "PROPUESTA PARA CARTERA DE CONSUMO. 25% DE DESCUENTO EN CHECKOUT Y HASTA 9 CUOTAS SIN INTERES CON TARJETAS DE CREDITO VISA Y MASTERCARD ICBC. TOPE DE $30,000 POR TRANSACCIÓN.",
+      "clarification": "",
+      "observation": "",
+      "descripcion": null,
+      "web": "https://www.adidas.com.ar/",
+      "url_front": "promo/moda/adidas.com-ahorro-cuotas-credito-icbc-online-martes",
+      "position": "220",
+      "ahorro_maximo": "25",
+      "cuotas_maximo": "9",
+      "url_logo": "https://static1-beneficiosicbc.icbc-cdn.com.ar/images/yios70mw1X7o4y5A.jpeg",
+      "rubro": "MODA",
+      "segments": [
+        {
+          "segment_id": "1",
+          "saving": "30000",
+          "type_saving": "POR TRANSACCIÓN",
+          "ahorro": "25",
+          "numero_cuotas": "9",
+          "segment": "GENERAL",
+          "color": "#C4161C"
+        }
+      ],
+      "campaigns": [{"campaign_id": "103", "main": "1", "name": "ONLINE"}]
+    },
+    {
+      "id": "13321",
+      "title": "ATALAYA",
+      "store": "ATALAYA",
+      "heading_id": "2",
+      "date_start": "2026-05-05 00:00:00",
+      "date_end": "2026-09-30 00:00:00",
+      "days": ["LU", "MA", "MI", "JU", "VI", "SA", "DO"],
+      "text_days": "TODOS LOS DÍAS",
+      "cards": ["VISA", "MASTER", "DEBITO"],
+      "system": ["MODO"],
+      "legal": "PROPUESTA PARA CARTERA DE CONSUMO. 30% DE AHORRO CON TARJETAS DE CREDITO. POR CADA $1000 DE CONSUMO SE REINTEGRARAN $300 EN SU CUENTA. TOPE DE REINTEGRO $8,000 POR CUENTA POR SEMANA.",
+      "clarification": "",
+      "observation": "",
+      "descripcion": null,
+      "web": "",
+      "url_front": "promo/resto/atalaya-ahorro-credito-debito-icbc-todos-los-dias",
+      "position": "50",
+      "ahorro_maximo": "30",
+      "cuotas_maximo": "0",
+      "url_logo": "https://static1-beneficiosicbc.icbc-cdn.com.ar/images/atalaya.png",
+      "rubro": "RESTO",
+      "segments": [
+        {
+          "segment_id": "1",
+          "saving": "8000",
+          "type_saving": "POR CUENTA POR SEMANA",
+          "ahorro": "30",
+          "numero_cuotas": "0",
+          "segment": "GENERAL",
+          "color": "#C4161C"
+        }
+      ],
+      "campaigns": []
+    }
+  ]
+}

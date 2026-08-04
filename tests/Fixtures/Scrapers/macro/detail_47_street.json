@@ -1,0 +1,63 @@
+{
+  "promotions": [
+    {
+      "code": "47409TC2",
+      "external-code": "47409",
+      "name": "47 STREET",
+      "sector": "Indumentaria",
+      "description": "47 STREET",
+      "day-week": "Jueves, Viernes y Sábados",
+      "valid-date-from": "2026-08-06 00:00:00",
+      "valid-date-to": "2026-08-08 00:00:00",
+      "payment": {
+        "minimum": "2",
+        "maximum": "12",
+        "method": "American Express Black Macro Selecta, Mastercard Black Macro Selecta, Visa Signature Macro Selecta"
+      },
+      "discount": {
+        "bank": "6",
+        "commercial": "24",
+        "maximum": "30"
+      },
+      "logo": "47 street.png",
+      "segment": "Selecta",
+      "terms-conditions": "PROPUESTA PARA CARTERA DE CONSUMO VALIDA EN LA REPUBLICA ARGENTINA LOS DÍAS JUEVES, VIERNES Y SÁBADOS. 30% DE AHORRO SIN TOPE DE DEVOLUCIÓN, Y HASTA 12 CUOTAS SIN INTERES.",
+      "details": [
+        {
+          "benefit-detail": "PROM1",
+          "location": {
+            "code": "LOC",
+            "latitude": 0,
+            "longitude": 0,
+            "name": "47 STREET",
+            "street": "AV. HIPOLITO YRIGOYEN 13298",
+            "city": "ADROGUE",
+            "province-code": "AR-B"
+          }
+        },
+        {
+          "benefit-detail": "PROM1",
+          "location": {
+            "code": "LOC",
+            "latitude": 0,
+            "longitude": 0,
+            "name": "47 STREET",
+            "street": "WEB 1",
+            "city": "CABA",
+            "province-code": "AR-B"
+          }
+        }
+      ]
+    }
+  ],
+  "pagination": {
+    "next-page": false,
+    "previous-page": false,
+    "last-page": true,
+    "first-page": true,
+    "total-pages": 1,
+    "offset": 1,
+    "records-number": 10,
+    "total-records": 1
+  }
+}
