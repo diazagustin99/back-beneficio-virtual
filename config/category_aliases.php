@@ -54,4 +54,18 @@ return [
     'auto' => 'Autos y motos',
     'turismo' => 'Viajes y turismo',
 
+    // Galicia/Santander/Credicoop/Banco Ciudad/Supervielle (agregadas en el
+    // mismo scrape) volvieron a traer variantes de rubros ya existentes —
+    // verificadas de la misma forma: mirando una promoción real de cada
+    // categoría para confirmar que es el mismo rubro, no solo una palabra
+    // parecida.
+    'automotor' => 'Autos y motos',
+    'automoviles-y-motos' => 'Autos y motos',
+    'hogar' => 'Hogar y deco',
+    'farmacia' => 'Farmacias',
+    'deporte' => 'Deportes',
+    // Confirmado con una promoción real de Santander: "Novecento Cañitas"
+    // (restaurante) categorizado como "Dining" — es Gastronomía, en inglés.
+    'dining' => 'Gastronomía',
+
 ];

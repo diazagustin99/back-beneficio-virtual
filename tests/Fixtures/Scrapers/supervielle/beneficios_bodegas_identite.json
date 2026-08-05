@@ -1,0 +1,24 @@
+{
+    "codigo": "OK",
+    "descripcion": "Se ejecutó el servicio correctamente",
+    "beneficios": [
+        {
+            "dias": ["lunes", " martes", " miércoles", " jueves", " viernes", " sábado", " domingo"],
+            "cuotas": ["3"],
+            "rubro": "Bodegas",
+            "logo": "https://content-us-7.content-cms.com/8ba19f21-9a97-4525-8886-f54d823a5cea/dxdam/7c/7c8fbba4-830b-4080-85b7-320e996d0dd1/altavista_170.png",
+            "marca": "Alta Vista Wines con MODO",
+            "esTarjetaCredito": true,
+            "esTarjetaDebito": false,
+            "descripcionTarjetas": "Ahorrá todos los días donde vos elijas",
+            "tope": 30000,
+            "esIdentite": true,
+            "esDestacado": false,
+            "descuento": "30%",
+            "zonas": "",
+            "id": "5b0c9dcbbce6bd0fae8c",
+            "fechaVigenciaDesde": "2026-04-01",
+            "fechaVigenciaHasta": "2026-11-30"
+        }
+    ]
+}

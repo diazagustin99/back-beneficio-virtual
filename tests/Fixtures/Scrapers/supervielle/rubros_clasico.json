@@ -1,0 +1,8 @@
+{
+    "codigo": "OK",
+    "descripcion": "Se ejecutó el servicio correctamente",
+    "rubros": [
+        { "nombre": "Automotor", "slug": "automotor" },
+        { "nombre": "Turismo", "slug": "turismo" }
+    ]
+}

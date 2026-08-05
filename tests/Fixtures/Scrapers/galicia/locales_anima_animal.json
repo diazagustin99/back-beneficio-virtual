@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "method": "GET",
+    "operation": "/api/v1/locales/idPromocion/146231"
+  },
+  "data": {
+    "list": [
+      {
+        "id": 154462,
+        "tipoLocal": "Físico",
+        "calle": "PRES MARCELO TORCUATO DE ALVEAR",
+        "numero": 1125,
+        "aclaracion": "Teatro Coliseo",
+        "codigoPostal": "1058",
+        "localidadNombre": "RETIRO",
+        "partidoNombre": "CAPITAL FEDERAL",
+        "paisNombre": "AR",
+        "provinciaNombre": "CAPITAL FEDERAL",
+        "latitud": -34.59679,
+        "longitud": -58.383102,
+        "telefono": "",
+        "descripcionWeb": null,
+        "shopping": null,
+        "nombreMarca": "Anima Animal",
+        "tipoPromocion": "Marca"
+      }
+    ],
+    "totalSize": 1
+  },
+  "errors": null
+}

@@ -1,0 +1,175 @@
+{
+  "id": 7586,
+  "initialDate": "2026-08-01T00:00:00",
+  "endDate": "2026-09-30T00:00:00",
+  "monday": false,
+  "tuesday": true,
+  "wednesday": false,
+  "thursday": false,
+  "friday": false,
+  "saturday": false,
+  "sunday": false,
+  "fullWeek": false,
+  "legal": "<p>PARA CLIENTES SUSCRIPTOS AL PROGRAMA SORPRESA SANTANDER. El ahorro se hará efectivo vía reintegro dentro de los 30 días de efectuado el consumo en la cuenta bancaria titular del cliente.</p>",
+  "customerDiscount": 25,
+  "topAmount": 15000,
+  "additionalText": "<p>Pagando con <strong>QR</strong> a través de la <strong>App Santander</strong>.</p>",
+  "showCurrentMonthOnly": true,
+  "initialQuote": 2,
+  "finalQuote": 3,
+  "interestFreeFees": true,
+  "specialCondition": null,
+  "stock": 0,
+  "productSegmentation": "Masiva",
+  "additionalBenefit": false,
+  "order": 2,
+  "tag": {
+    "id": 2,
+    "description": "Sorpresa",
+    "code": "SOR",
+    "status": false,
+    "colorCode": "#257FA4"
+  },
+  "frecuency": {
+    "id": 2,
+    "description": "Mensual",
+    "code": "M"
+  },
+  "paymentType": {
+    "id": 3,
+    "description": "QR - Modo",
+    "code": "M"
+  },
+  "paymentMethod": null,
+  "benefitType": {
+    "id": 1,
+    "description": "Ahorro",
+    "code": "A"
+  },
+  "categories": [
+    {
+      "id": 10,
+      "description": "Farmacias",
+      "code": "FAR"
+    }
+  ],
+  "images": [],
+  "relatedPublications": [],
+  "cards": [
+    {
+      "id": 1,
+      "description": "VISA",
+      "code": "81",
+      "idType": 1,
+      "descriptionType": "DEBITO",
+      "codeType": "D",
+      "image": "https://microfe.santander.com.ar/premify/benefits/assets/images/visa_tarjeta_debito.png"
+    },
+    {
+      "id": 2,
+      "description": "VISA",
+      "code": "40",
+      "idType": 2,
+      "descriptionType": "CREDITO",
+      "codeType": "C",
+      "image": "https://microfe.santander.com.ar/premify/benefits/assets/images/visa_tarjeta_credito.png"
+    }
+  ],
+  "brands": [
+    {
+      "id": 23240,
+      "brand": {
+        "id": 184,
+        "code": "",
+        "name": "Farmacity",
+        "desktopImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Farmacity_desktopImage.png",
+        "desktopMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Farmacity_desktopMinImage.png",
+        "mobileImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Farmacity_mobileImage.png",
+        "mobileMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Farmacity_mobileMinImage.png",
+        "active": true,
+        "order": 2,
+        "benefitDescription": null,
+        "colorCode": "",
+        "brandType": {
+          "id": 1,
+          "description": "Standar",
+          "code": "STA",
+          "active": true
+        }
+      },
+      "establishments": [
+        {
+          "id": 427411,
+          "address": "Carlos Pellegrini 457, e/Av. Corrientes y Lavalle",
+          "city": "C.A.B.A",
+          "province": "C.A.B.A",
+          "fantasyName": "FARMACITY",
+          "homePage": "",
+          "shopping": "",
+          "isApp": false,
+          "latitude": null,
+          "longitude": null
+        },
+        {
+          "id": 427412,
+          "address": "Rivadavia 6732",
+          "city": "C.A.B.A",
+          "province": "C.A.B.A",
+          "fantasyName": "FARMACITY",
+          "homePage": "",
+          "shopping": "",
+          "isApp": false,
+          "latitude": null,
+          "longitude": null
+        }
+      ]
+    },
+    {
+      "id": 23241,
+      "brand": {
+        "id": 495,
+        "code": "",
+        "name": "The Food Market",
+        "desktopImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/The_Food_Market_desktopImage.png",
+        "desktopMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/The_Food_Market_desktopMinImage.png",
+        "mobileImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/The_Food_Market_mobileImage.png",
+        "mobileMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/The_Food_Market_mobileMinImage.png",
+        "active": true,
+        "order": 3,
+        "benefitDescription": null,
+        "colorCode": "",
+        "brandType": {
+          "id": 1,
+          "description": "Standar",
+          "code": "STA",
+          "active": true
+        }
+      },
+      "establishments": [
+        {
+          "id": 900001,
+          "address": "Av. Cabildo 2450",
+          "city": "C.A.B.A",
+          "province": "C.A.B.A",
+          "fantasyName": "THE FOOD MARKET",
+          "homePage": "",
+          "shopping": "",
+          "isApp": false,
+          "latitude": null,
+          "longitude": null
+        }
+      ]
+    }
+  ],
+  "texts": {
+    "title": "25% de ahorro + hasta 3 cuotas sin interés",
+    "description": "Tope de reintegro: $15.000 mensual",
+    "discount": 25,
+    "untilDiscount": false,
+    "fees": 3,
+    "inAPayment": false,
+    "interest": "sin interés",
+    "untilFees": true
+  },
+  "homePages": []
+}

@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "method": "GET",
+    "operation": "/api/v1/spa/promociones/catalogo"
+  },
+  "data": {
+    "list": [
+      {
+        "id": 146231,
+        "promocion": "15% de ahorro y hasta 3 cuotas sin interés",
+        "idMarca": 120735,
+        "imagen": "animaanimal.png",
+        "fondo": null,
+        "titulo": "Anima Animal",
+        "subtitulo": "Entretenimiento",
+        "adicional": null,
+        "callToAction": null,
+        "eminent": false,
+        "pagoQR": false,
+        "contactLess": false,
+        "tipoPromocion": "Marca",
+        "link": null,
+        "pagoNFC": false,
+        "flagNovedad": false,
+        "haberes": false,
+        "autogestivas": false,
+        "onTop": false,
+        "proximamente": false,
+        "leyendaDiasAplicacion": "Todos los días",
+        "mediosDePago": [
+          { "tarjeta": "Tarjeta Access Now Visa", "tipoTarjeta": "Credito" },
+          { "tarjeta": "Tarjeta PowerCard Visa", "tipoTarjeta": "Credito" },
+          { "tarjeta": "Tarjeta Visa", "tipoTarjeta": "Credito" },
+          { "tarjeta": "Tarjeta Galicia Débito", "tipoTarjeta": "Debito" }
+        ],
+        "modeloAtencion": { "nombre": "Masivo", "exclusivo": false },
+        "idExperiencia": null,
+        "esRegresiva": false,
+        "fechaHasta": "2026-09-01T00:00:00"
+      },
+      {
+        "id": 159885,
+        "promocion": "20% de ahorro y hasta 6 cuotas sin interés",
+        "idMarca": 110903,
+        "imagen": "lacopa180.png",
+        "fondo": null,
+        "titulo": "Vinoteca La Copa",
+        "subtitulo": "Gastronomía",
+        "adicional": null,
+        "callToAction": null,
+        "eminent": false,
+        "pagoQR": false,
+        "contactLess": false,
+        "tipoPromocion": "Marca",
+        "link": null,
+        "pagoNFC": false,
+        "flagNovedad": false,
+        "haberes": false,
+        "autogestivas": false,
+        "onTop": false,
+        "proximamente": false,
+        "leyendaDiasAplicacion": "Todos los días",
+        "mediosDePago": [
+          { "tarjeta": "Tarjeta Access Now Visa", "tipoTarjeta": "Credito" },
+          { "tarjeta": "Tarjeta Mastercard", "tipoTarjeta": "Credito" },
+          { "tarjeta": "Tarjeta Visa", "tipoTarjeta": "Credito" },
+          { "tarjeta": "Tarjeta Galicia Débito", "tipoTarjeta": "Debito" }
+        ],
+        "modeloAtencion": { "nombre": "Masivo", "exclusivo": false },
+        "idExperiencia": null,
+        "esRegresiva": false,
+        "fechaHasta": "2026-08-31T00:00:00"
+      }
+    ],
+    "totalSize": 2
+  },
+  "errors": null
+}

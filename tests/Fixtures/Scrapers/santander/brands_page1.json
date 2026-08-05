@@ -1,0 +1,62 @@
+{
+  "items": [
+    {
+      "id": 131,
+      "code": "",
+      "name": "Coto",
+      "desktopImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Coto_desktopImage.png",
+      "desktopMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/coto_desktopMinImage.png",
+      "mobileImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Coto_mobileImage.png",
+      "mobileMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Coto_mobileMinImage.png",
+      "active": true,
+      "order": 2,
+      "benefitDescription": "30%",
+      "colorCode": "#9E3667",
+      "brandType": {
+        "id": 1,
+        "description": "Standar",
+        "code": "STA",
+        "active": true
+      }
+    },
+    {
+      "id": 184,
+      "code": "",
+      "name": "Farmacity",
+      "desktopImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Farmacity_desktopImage.png",
+      "desktopMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Farmacity_desktopMinImage.png",
+      "mobileImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Farmacity_mobileImage.png",
+      "mobileMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Farmacity_mobileMinImage.png",
+      "active": true,
+      "order": 2,
+      "benefitDescription": "25%",
+      "colorCode": "#257FA4",
+      "brandType": {
+        "id": 1,
+        "description": "Standar",
+        "code": "STA",
+        "active": true
+      }
+    },
+    {
+      "id": 267,
+      "code": "",
+      "name": "Open Sports",
+      "desktopImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/brand_54423f01-82a6-46b2-a2b3-cc7955e1f013.png",
+      "desktopMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/brand_6531f667-749a-44a3-a3ba-f3438766fc6a.png",
+      "mobileImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/brand_37fee676-ecc4-4185-8239-c72554fa43b3.png",
+      "mobileMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/brand_e6c7334a-ea70-43b6-a9dd-fb25035c3bc0.png",
+      "active": true,
+      "order": 2,
+      "benefitDescription": "20%",
+      "colorCode": "#257FA4",
+      "brandType": {
+        "id": 1,
+        "description": "Standar",
+        "code": "STA",
+        "active": true
+      }
+    }
+  ],
+  "totalItems": 3
+}

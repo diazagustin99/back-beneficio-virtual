@@ -1,0 +1,24 @@
+{
+    "codigo": "OK",
+    "descripcion": "Se ejecutó el servicio correctamente",
+    "beneficio": {
+        "dias": ["lunes", " martes", " miércoles", " jueves", " viernes", " sábado", " domingo"],
+        "cuotas": ["12"],
+        "rubro": "Automotor",
+        "logo": "https://content-us-7.content-cms.com/8ba19f21-9a97-4525-8886-f54d823a5cea/dxdam/logos-beneficios/bridgestone.png",
+        "marca": "Bridgestone",
+        "esTarjetaCredito": true,
+        "esTarjetaDebito": false,
+        "descripcionTarjetas": "Nos renovamos, renovate con estos beneficios para vos",
+        "tope": null,
+        "web": "https://content-us-7.content-cms.com/8ba19f21-9a97-4525-8886-f54d823a5cea/dxdam/56/56425ad0-d1b3-4b12-8445-91908688db93/BRIDGESTONE - Hojas de calculo de Google.pdf",
+        "legales": "CFTEA: 0,00%. CARTERA CONSUMO. Banco Supervielle S.A., Reconquista 330, C.A.B.A., CUIT 33-50000517-9, Inscrip. I.G.J. N° 23, F° 502, L. 45, T° A de Estatutos Nac. (“el Banco”). Vigente del 1 de abril al 31 de julio de 2026 para compras presenciales en locales de Bridgestone adheridos abonadas con las tarjetas de crédito Visa y/o MasterCard (“las TC”) que formen parte de un paquete de productos del Banco. Para compras en hasta 12 cuotas sin interés: Tasa Nominal Anual (TNA): 0,00%; Tasa Efectiva Anual (TEA): 0,00%; Costo Financiero Total Efectivo Anual (CFTEA): 0,00%. El Banco no es responsable por los productos y/o servicios comercializados por las marcas y locales participantes en las promociones.",
+        "esIdentite": false,
+        "esDestacado": false,
+        "cft": null,
+        "locales": [],
+        "id": "5814f1fca7edb507bb908d",
+        "fechaVigenciaDesde": "2026-04-01",
+        "fechaVigenciaHasta": "2026-11-30"
+    }
+}

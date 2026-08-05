@@ -86,6 +86,51 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $this->assertNull($promotion->fixed_amount);
     }
 
+    public function test_an_exclamatory_banner_sentence_as_merchant_name_resolves_to_the_wallet_name(): void
+    {
+        $wallet = Wallet::factory()->create(['name' => 'Cuenta DNI']);
+        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+
+        app(SyncPromotionsFromScraperAction::class)->handle(
+            $wallet,
+            $scrapeRun,
+            [$this->dto($wallet, ['merchantName' => '¡Al super con Cuenta DNI!'])],
+        );
+
+        $promotion = Promotion::sole();
+        $this->assertSame('Cuenta DNI', $promotion->merchant->name);
+    }
+
+    public function test_an_interrogative_banner_sentence_as_merchant_name_resolves_to_the_wallet_name(): void
+    {
+        $wallet = Wallet::factory()->create(['name' => 'Cuenta DNI']);
+        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+
+        app(SyncPromotionsFromScraperAction::class)->handle(
+            $wallet,
+            $scrapeRun,
+            [$this->dto($wallet, ['merchantName' => '¿Ya probaste tu beneficio de hoy?'])],
+        );
+
+        $promotion = Promotion::sole();
+        $this->assertSame('Cuenta DNI', $promotion->merchant->name);
+    }
+
+    public function test_a_merchant_name_that_merely_contains_punctuation_is_left_alone(): void
+    {
+        $wallet = Wallet::factory()->create(['name' => 'Cuenta DNI']);
+        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+
+        app(SyncPromotionsFromScraperAction::class)->handle(
+            $wallet,
+            $scrapeRun,
+            [$this->dto($wallet, ['merchantName' => 'Plop! Hogar'])],
+        );
+
+        $promotion = Promotion::sole();
+        $this->assertSame('Plop! Hogar', $promotion->merchant->name);
+    }
+
     public function test_change_detected_writes_snapshot_of_old_state_and_bumps_version(): void
     {
         $wallet = Wallet::factory()->create();

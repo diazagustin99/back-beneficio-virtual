@@ -1,0 +1,24 @@
+{
+    "codigo": "OK",
+    "descripcion": "Se ejecutó el servicio correctamente",
+    "beneficios": [
+        {
+            "dias": ["lunes", " martes", " miércoles", " jueves", " viernes", " sábado", " domingo"],
+            "cuotas": ["12"],
+            "rubro": "Turismo",
+            "logo": "https://content-us-7.content-cms.com/8ba19f21-9a97-4525-8886-f54d823a5cea/dxdam/31/312f98f8-2f58-41a8-8d12-82aab94d0672/sheraton_170.jpg",
+            "marca": "Sheraton Mendoza",
+            "esTarjetaCredito": true,
+            "esTarjetaDebito": false,
+            "descripcionTarjetas": "La mejor forma de tener a mano  lo que necesitas",
+            "tope": 20000,
+            "esIdentite": true,
+            "esDestacado": false,
+            "descuento": "20%",
+            "zonas": "",
+            "id": "5f0885a487f7aa01bc9290",
+            "fechaVigenciaDesde": "2026-04-01",
+            "fechaVigenciaHasta": "2026-11-30"
+        }
+    ]
+}

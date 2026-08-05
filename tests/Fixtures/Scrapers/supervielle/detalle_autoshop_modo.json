@@ -1,0 +1,25 @@
+{
+    "codigo": "OK",
+    "descripcion": "Se ejecutó el servicio correctamente",
+    "beneficio": {
+        "dias": ["martes", " miércoles", " jueves"],
+        "cuotas": null,
+        "rubro": "Automotor",
+        "logo": "https://content-us-7.content-cms.com/8ba19f21-9a97-4525-8886-f54d823a5cea/dxdam/logos-beneficios/modo.png",
+        "marca": "Autoshop con MODO",
+        "esTarjetaCredito": true,
+        "esTarjetaDebito": true,
+        "descripcionTarjetas": "Nos renovamos, renovate con estos beneficios para vos",
+        "tope": null,
+        "web": "https://www.modo.com.ar/promos/autoshop-mar26",
+        "legales": "Aprovechá 15% de ahorro con tope mensual $15.000 en compras en Autoshop los miércoles y jueves pagando con MODO desde app Supervielle. Monto mínimo de compra $50.000. Consultar términos y condiciones en https://www.modo.com.ar/promos/autoshop-mar26",
+        "esIdentite": false,
+        "esDestacado": false,
+        "cft": null,
+        "locales": [],
+        "descuento": "15%",
+        "id": "5e14f1fca7edb507bb908d",
+        "fechaVigenciaDesde": "2026-05-26",
+        "fechaVigenciaHasta": "2026-11-30"
+    }
+}

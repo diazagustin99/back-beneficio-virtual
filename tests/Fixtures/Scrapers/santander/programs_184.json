@@ -1,0 +1,112 @@
+{
+  "items": [
+    {
+      "id": 7586,
+      "idPromotion": 13792,
+      "startDatePublication": "2026-08-01T00:00:00",
+      "endDatePublication": "2026-09-30T00:00:00",
+      "monday": false,
+      "tuesday": true,
+      "wednesday": false,
+      "thursday": false,
+      "friday": false,
+      "saturday": false,
+      "sunday": false,
+      "fullWeek": false,
+      "multiPublication": false,
+      "customerDiscount": 25,
+      "topAmount": 15000,
+      "additionalText": "<p>Pagando con <strong>QR</strong> a través de la <strong>App Santander</strong>.</p><p></p><p>Beneficio exclusivo para clientes suscriptos a <strong>Sorpresa Santander</strong>.</p>",
+      "monthlyCut": false,
+      "initialQuote": 2,
+      "finalQuote": 3,
+      "interestFreeFees": true,
+      "specialCondition": null,
+      "order": 2,
+      "legal": "<p>PARA CLIENTES SUSCRIPTOS AL PROGRAMA SORPRESA SANTANDER.</p><p>Válido todos los días Martes abonando con QR a través de la App Santander o App MODO con Tarjeta Santander crédito y/o débito VISA en todos los locales adheridos. No acumulable con otras promociones.</p><p>El ahorro es exclusivo para clientes suscriptos al programa Sorpresa Santander. El ahorro se hará efectivo vía reintegro dentro de los 30 días de efectuado el consumo en la cuenta bancaria titular del cliente. Tope: suma de las compras realizadas por el titular de tarjeta de crédito y sus adicionales y las efectuadas con todas las tarjetas de débito asociadas a la cuenta del titular de la misma.</p>",
+      "benefitType": {
+        "id": 1,
+        "description": "Ahorro",
+        "code": "A"
+      },
+      "paymentType": {
+        "id": 3,
+        "description": "QR - Modo",
+        "code": "M"
+      },
+      "paymentMethod": null,
+      "frecuency": {
+        "id": 2,
+        "description": "Mensual",
+        "code": "M"
+      },
+      "tag": {
+        "id": 2,
+        "description": "Sorpresa",
+        "code": "SOR",
+        "status": false,
+        "colorCode": "#257FA4"
+      },
+      "brands": [
+        {
+          "id": 184,
+          "code": "",
+          "name": "Farmacity",
+          "desktopImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Farmacity_desktopImage.png",
+          "desktopMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Farmacity_desktopMinImage.png",
+          "mobileImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Farmacity_mobileImage.png",
+          "mobileMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Farmacity_mobileMinImage.png",
+          "active": true,
+          "order": 2,
+          "benefitDescription": null,
+          "colorCode": "",
+          "brandType": {
+            "id": 1,
+            "description": "Standar",
+            "code": "STA",
+            "active": true
+          }
+        }
+      ],
+      "relatedPublications": null,
+      "categories": [
+        {
+          "id": 10,
+          "description": "Farmacias",
+          "code": "FAR"
+        },
+        {
+          "id": 18,
+          "description": "Varios",
+          "code": "VAR"
+        },
+        {
+          "id": 36,
+          "description": "Modo",
+          "code": "MOD"
+        },
+        {
+          "id": 58,
+          "description": "Exclusiva Visa",
+          "code": "EXV"
+        },
+        {
+          "id": 61,
+          "description": "Sorpresa",
+          "code": "SOR"
+        }
+      ],
+      "texts": {
+        "title": "25% de ahorro + hasta 3 cuotas sin interés",
+        "description": "Tope de reintegro: $15.000 mensual",
+        "discount": 25,
+        "untilDiscount": false,
+        "fees": 3,
+        "inAPayment": false,
+        "interest": "sin interés",
+        "untilFees": true
+      }
+    }
+  ],
+  "totalItems": 1
+}

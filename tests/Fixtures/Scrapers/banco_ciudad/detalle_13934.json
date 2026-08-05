@@ -1,0 +1,54 @@
+{
+  "mensaje": "OK",
+  "retorno": {
+    "beneficio": {
+      "id": 13934,
+      "cuotas": 0,
+      "descuento": 30,
+      "medios_pago": [
+        { "id": 7, "nombre": "BUEPP", "credito": "N", "icono_tarjeta": "tarjeta/7/logo" }
+      ],
+      "css_icono_rubro": "icon-bcba_general_periscope",
+      "idRubro": 1170,
+      "dias": "LMMJVSD",
+      "sin_tope": false,
+      "nuevo": false,
+      "conEtiquetaLibre": false,
+      "visitas": 34288,
+      "shopping": false,
+      "medioUnicoTipo": true,
+      "descuentoAdicionalDescripcion": "",
+      "descAdicional": "N",
+      "promoDosPorUno": "N",
+      "aplica_tienda_online": false,
+      "resumen": "¡Aprovechá 30% de reintegro en Comercios Vecinos! Todos los días pagando a través de la billetera Buepp.",
+      "legales": "Promoción ofrecida por billetera Buepp del Banco de la Ciudad de Buenos Aires, cuit 30-99903208-3 para toda la República Argentina desde el 01/12/2025 hasta el 31/12/2026 para compras presenciales realizadas en comercios adheridos. Se otorgará un 30% de descuento con un tope de devolución mensual por cliente de $15.000 totales para todos los comercios participantes bajo el rubro “Comercios Vecinos”, abonando exclusivamente con QR Modo a través de Buepp con tarjeta de débito, crédito, o dinero en cuenta. El descuento se acreditará en la cuenta de Banco Ciudad o Buepp del cliente, dentro de los 45 días posteriores a la fecha de realizada la compra.",
+      "legales_genericas": "No aplica para tarjetas corporativas. La URL de los comercios adheridos se publica a título ilustrativo.",
+      "cft": "0.0",
+      "mostrar_cft": false,
+      "tipo_cliente": "PERSONA",
+      "legalesGenericas": true,
+      "con_archivo_pdf": false,
+      "nombre_pdf": "",
+      "fechaDesde": "2025-12-01T03:00:00.000+00:00",
+      "fechaHasta": "2026-12-31T03:00:00.000+00:00",
+      "nombreRubro": "Comercios Vecinos",
+      "ato": false
+    },
+    "comercio": {
+      "nombre": "RES",
+      "logo": "5432/logo",
+      "web": ""
+    },
+    "sucursales_cercanas": [
+      {
+        "distancia": 10663,
+        "latitud": -34.67646,
+        "longitud": -58.454582,
+        "direccion": "Av. Escalada 4402, C1439 Cdad. Autónoma de Buenos Aires, Argentina",
+        "otrosDatos": ""
+      }
+    ],
+    "beneficios_modo": []
+  }
+}

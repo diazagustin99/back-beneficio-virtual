@@ -1,0 +1,25 @@
+{
+    "codigo": "OK",
+    "descripcion": "Se ejecutó el servicio correctamente",
+    "beneficio": {
+        "dias": ["lunes", " martes", " miércoles", " jueves", " viernes", " sábado", " domingo"],
+        "cuotas": ["12"],
+        "rubro": "Turismo",
+        "logo": "https://content-us-7.content-cms.com/8ba19f21-9a97-4525-8886-f54d823a5cea/dxdam/31/312f98f8-2f58-41a8-8d12-82aab94d0672/sheraton_170.jpg",
+        "marca": "Sheraton Mendoza",
+        "esTarjetaCredito": true,
+        "esTarjetaDebito": false,
+        "descripcionTarjetas": "La mejor forma de tener a mano  lo que necesitas",
+        "tope": 20000,
+        "web": "https://www.marriott.com/es/hotels/mdzsi-sheraton-mendoza-hotel/overview/",
+        "legales": "CFTEA: 0,00%. CARTERA CONSUMO. Banco Supervielle S.A., Reconquista 330, C.A.B.A., CUIT 33-50000517-9, Inscrip. I.G.J. N° 23, F° 502, L. 45, T° A de Estatutos Nac. (“el Banco”). Vigente todos los días de la semana del 1 de abril al 31 de julio de 2026 para compras abonadas con las tarjetas de crédito Visa Platinum y/o Signature que formen parte de un paquete de productos Identité del Banco en hoteles Sheraton adheridos de la República Argentina. Tope de reintegro mensual $20.000. Ej.: para una compra de $60.000 en 1 (un) pago se realizará un descuento vía reintegro del 20% sobre el precio. El consumo de $60.000 y el reintegro de $12.000 se verán reflejados en el 1er resumen posterior a la compra. El Banco no es responsable por los productos y/o servicios comercializados por las marcas y locales participantes en las promociones.",
+        "esIdentite": true,
+        "esDestacado": false,
+        "cft": null,
+        "locales": [],
+        "descuento": "20%",
+        "id": "5f0885a487f7aa01bc9290",
+        "fechaVigenciaDesde": "2026-04-01",
+        "fechaVigenciaHasta": "2026-11-30"
+    }
+}

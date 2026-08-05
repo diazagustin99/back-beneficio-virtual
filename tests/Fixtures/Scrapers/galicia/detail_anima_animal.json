@@ -1,0 +1,60 @@
+{
+  "meta": {
+    "method": "GET",
+    "operation": "/api/v1/promociones/idPromocion/146231"
+  },
+  "data": {
+    "id": 146231,
+    "cuotaSinInteresDesde": 2,
+    "cuotaSinInteresHasta": 3,
+    "diasAplicacion": "Lu;Ma;Mi;Ju;Vi;Sa;Do",
+    "fechaDesde": "09/01/2026",
+    "fechaHasta": "01/09/2026",
+    "legales": "CARTERA DE CONSUMO. Promoción de hasta 3 cuotas sin interés en el precio de contado, para compras realizadas en el País. Válida desde el 09/01/2026 hasta el 01/09/2026 o hasta agotar stock, lo que suceda primero. Promoción válida únicamente para compras en https://www.ticketek.com.ar/ o en boleterías realizadas con Tarjeta Galicia Débito y Tarjeta Visa. El importe ahorrado se acreditará en la caja de ahorro. Ofrecido por Banco de Galicia y Buenos Aires S.A. CUIT: 30-50000173-5, Tte. J.D. Perón 407 (C1038AAI), Buenos Aires, Argentina.",
+    "marca": {
+      "id": 120735,
+      "nombre": "Anima Animal",
+      "tipoPromocion": "Marca",
+      "categoria": {
+        "id": 6,
+        "descripcion": "Entretenimiento",
+        "imagen": "Imagen categoria entretenimiento.png",
+        "emoji": "emojiHappy"
+      },
+      "imagen": "animaanimal.png",
+      "urlTiendaOnline": "https://www.ticketek.com.ar/herman-cornejo/teatro-coliseo"
+    },
+    "porcentajeAhorro": 15,
+    "cfteaIndividuo": 0,
+    "cfteaComercio": 0,
+    "tipoTope": "Sin Tope",
+    "periodicidad": null,
+    "topeReintegro": 0,
+    "leyendaTope": "Sin tope de reintegro.",
+    "descripcionAdicional": null,
+    "categoria": null,
+    "exclusiones": null,
+    "modeloAtencion": { "nombre": "Masivo", "exclusivo": false },
+    "mediosDePago": [
+      { "tarjeta": "Tarjeta Access Now Visa", "tipoTarjeta": "Credito" },
+      { "tarjeta": "Tarjeta PowerCard Visa", "tipoTarjeta": "Credito" },
+      { "tarjeta": "Tarjeta Visa", "tipoTarjeta": "Credito" },
+      { "tarjeta": "Tarjeta Galicia Débito", "tipoTarjeta": "Debito" }
+    ],
+    "tipoPromocion": "Marca",
+    "leyendaCompra": "Todos los días en los comercios adheridos.",
+    "leyendaPaga": "Promoción válida con tus Tarjetas Galicia.",
+    "leyendaListo": "Aprovechaste las cuotas sin interés y vas a encontrar el reintegro en tu caja de ahorro.",
+    "tiendaOnline": true,
+    "tiendaFisica": true,
+    "flagMillas": false,
+    "haberes": false,
+    "flagNFC": false,
+    "flagQR": false,
+    "onTop": false,
+    "contactLess": false,
+    "proximamente": false,
+    "minimoCompra": null
+  },
+  "errors": null
+}

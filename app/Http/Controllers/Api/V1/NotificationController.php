@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\Preferences\CountUnreadPreferenceNotificationsAction;
 use App\Actions\Preferences\ListPreferenceNotificationsAction;
 use App\Actions\Preferences\MarkNotificationReadAction;
 use App\Http\Controllers\Controller;
@@ -22,6 +23,18 @@ class NotificationController extends Controller
             return $this->response($notifications->through(fn (DatabaseNotification $notification) => new NotificationResource($notification)));
         } catch (Throwable $e) {
             return $this->response($e, 500, 'Error al listar las notificaciones');
+        }
+    }
+
+    // Deliberately separate from `index`: the frontend polls this on an
+    // interval for the header badge, and fetching (and JSON-encoding) full
+    // notification payloads just to count them every tick would be wasteful.
+    public function unreadCount(Preference $preference, CountUnreadPreferenceNotificationsAction $action)
+    {
+        try {
+            return $this->response(['unread_count' => $action->handle($preference)]);
+        } catch (Throwable $e) {
+            return $this->response($e, 500, 'Error al contar las notificaciones');
         }
     }
 

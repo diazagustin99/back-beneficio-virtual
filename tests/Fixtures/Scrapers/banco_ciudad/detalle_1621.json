@@ -1,0 +1,55 @@
+{
+  "mensaje": "OK",
+  "retorno": {
+    "beneficio": {
+      "id": 1621,
+      "cuotas": 24,
+      "descuento": 0,
+      "medios_pago": [
+        { "id": 4, "nombre": "MASTERCARD", "credito": "S", "icono_tarjeta": "tarjeta/4/logo" },
+        { "id": 1, "nombre": "VISA", "credito": "S", "icono_tarjeta": "tarjeta/1/logo" }
+      ],
+      "css_icono_rubro": "icon-bcba_beneficios_bicicleterias",
+      "idRubro": 14,
+      "dias": "LMMJVSD",
+      "sin_tope": false,
+      "nuevo": false,
+      "conEtiquetaLibre": false,
+      "visitas": 17894,
+      "shopping": false,
+      "medioUnicoTipo": true,
+      "descuentoAdicionalDescripcion": "",
+      "descAdicional": "S",
+      "promoDosPorUno": "N",
+      "aplica_tienda_online": false,
+      "resumen": "24 cuotas sin interes",
+      "legales": "Promoción ofrecida en la República Argentina por el Banco de la Ciudad de Buenos Aires, cuit 30-99903208-3 (Banco Ciudad) válida todos los días desde el 01/12/2025 al 31/12/2026 inclusive, para compras abonadas en pesos con tarjetas de Crédito Visa y Mastercard del Banco Ciudad, en 12 y 24 cuotas sin interés sobre el precio de lista en locales adheridos.",
+      "legales_genericas": "No aplica para tarjetas corporativas. La URL de los comercios adheridos se publica a título ilustrativo.",
+      "cft": "0.00",
+      "mostrar_cft": true,
+      "tipo_cliente": "PERSONA",
+      "legalesGenericas": true,
+      "con_archivo_pdf": false,
+      "nombre_pdf": "",
+      "fechaDesde": "2025-12-01T03:00:00.000+00:00",
+      "fechaHasta": "2026-12-31T03:00:00.000+00:00",
+      "nombreRubro": "Bicicleterías",
+      "ato": false
+    },
+    "comercio": {
+      "nombre": "Ale Bikes",
+      "logo": "5/logo",
+      "web": "www.alebikes.com.ar "
+    },
+    "sucursales_cercanas": [
+      {
+        "distancia": 0,
+        "latitud": -34.625065,
+        "longitud": -58.427208,
+        "direccion": "Av. Directorio 2340, CABA, Buenos Aires",
+        "otrosDatos": ""
+      }
+    ],
+    "beneficios_modo": []
+  }
+}

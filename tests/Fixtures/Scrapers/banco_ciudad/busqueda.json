@@ -1,0 +1,118 @@
+{
+  "mensaje": "OK",
+  "retorno": {
+    "beneficios": [
+      {
+        "distancia": 0,
+        "latitud": -34.67646,
+        "longitud": -58.454582,
+        "id": 13934,
+        "idSucursal": 0,
+        "descuento": 30,
+        "comercio_nombre": "RES",
+        "cuotas": 0,
+        "css_icono_rubro": "icon-bcba_general_periscope",
+        "descuentoAdicionalDescripcion": "",
+        "descAdicional": "N",
+        "promoDosPorUno": "N",
+        "comercio_id": 5432,
+        "comercio_logo": "5432/logo",
+        "shopping_id": 0,
+        "dias": "LMMJVSD",
+        "todos_dias": true,
+        "sin_tope": false,
+        "nuevo": false,
+        "tipo_cliente": "PERSONA",
+        "resumen": "¡Aprovechá 30% de reintegro en Comercios Vecinos! Todos los días pagando a través de la billetera Buepp.",
+        "shopping": false,
+        "medioUnicoTipo": true,
+        "medios_pago": [
+          { "id": 7, "nombre": "BUEPP", "credito": "N", "icono_tarjeta": "tarjeta/7/logo" }
+        ],
+        "visitas": 34288,
+        "rubroId": 1170,
+        "aplica_tienda_online": false,
+        "conEtiquetaLibre": false
+      },
+      {
+        "distancia": 0,
+        "latitud": -34.625065,
+        "longitud": -58.427208,
+        "id": 1621,
+        "idSucursal": 0,
+        "descuento": 0,
+        "comercio_nombre": "Ale Bikes",
+        "cuotas": 24,
+        "css_icono_rubro": "icon-bcba_beneficios_bicicleterias",
+        "descuentoAdicionalDescripcion": "",
+        "descAdicional": "S",
+        "promoDosPorUno": "N",
+        "comercio_id": 5,
+        "comercio_logo": "5/logo",
+        "shopping_id": 0,
+        "dias": "LMMJVSD",
+        "todos_dias": true,
+        "sin_tope": false,
+        "nuevo": false,
+        "tipo_cliente": "PERSONA",
+        "resumen": "24 cuotas sin interes",
+        "shopping": false,
+        "medioUnicoTipo": true,
+        "medios_pago": [
+          { "id": 4, "nombre": "MASTERCARD", "credito": "S", "icono_tarjeta": "tarjeta/4/logo" },
+          { "id": 1, "nombre": "VISA", "credito": "S", "icono_tarjeta": "tarjeta/1/logo" }
+        ],
+        "visitas": 17888,
+        "rubroId": 14,
+        "aplica_tienda_online": false,
+        "conEtiquetaLibre": false
+      },
+      {
+        "distancia": 0,
+        "latitud": -34.6037,
+        "longitud": -58.4416,
+        "id": 15787,
+        "idSucursal": 0,
+        "descuento": 10,
+        "comercio_nombre": "Combustible.",
+        "cuotas": 0,
+        "css_icono_rubro": "icon-bcba_beneficios_automotor",
+        "descuentoAdicionalDescripcion": "",
+        "descAdicional": "N",
+        "promoDosPorUno": "N",
+        "comercio_id": 5526,
+        "comercio_logo": "5526/logo",
+        "shopping_id": 0,
+        "dias": "------D",
+        "todos_dias": false,
+        "sin_tope": false,
+        "nuevo": false,
+        "tipo_cliente": "PERSONA",
+        "resumen": "10% de descuento en estaciones YPF, SHELL y AXION los Domingos, con tope de reintegro de $10.000 mensual por cliente abonando con QR de MODO y tus tarjetas  de crédito Visa y MasterCard del Ciudad a través de Buepp o  App Ciudad.",
+        "shopping": false,
+        "medioUnicoTipo": true,
+        "medios_pago": [
+          { "id": 1, "nombre": "VISA", "credito": "S", "icono_tarjeta": "tarjeta/1/logo" },
+          { "id": 4, "nombre": "MASTERCARD", "credito": "S", "icono_tarjeta": "tarjeta/4/logo" }
+        ],
+        "visitas": 512,
+        "rubroId": 12,
+        "aplica_tienda_online": false,
+        "conEtiquetaLibre": false
+      }
+    ],
+    "cantidadTotalBeneficios": 3,
+    "rubrosPorCliente": [
+      {
+        "tipo_cliente": "PERSONA",
+        "rubros": [
+          { "id": 12, "idRubroPadre": -1, "nombre": "Combustible", "css_icono_rubro": "icon-bcba_beneficios_automotor", "cantidad_beneficios": 2, "subRubros": [], "orden": 12, "nombreUrl": "Combustible" },
+          { "id": 14, "idRubroPadre": -1, "nombre": "Bicicleterías", "css_icono_rubro": "icon-bcba_beneficios_bicicleterias", "cantidad_beneficios": 63, "subRubros": [], "orden": 23, "nombreUrl": "Bicicleterías" },
+          { "id": 1170, "idRubroPadre": -1, "nombre": "Comercios Vecinos", "css_icono_rubro": "icon-bcba_general_periscope", "cantidad_beneficios": 564, "subRubros": [], "orden": 7, "nombreUrl": "ComerciosVecinos" }
+        ]
+      },
+      { "tipo_cliente": "EMPRESA", "rubros": [] }
+    ],
+    "rubroShopping": null
+  }
+}

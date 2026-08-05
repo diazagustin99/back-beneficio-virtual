@@ -42,6 +42,35 @@ class NotificationControllerTest extends TestCase
             ->assertNotFound();
     }
 
+    public function test_unread_count_counts_only_unread_notifications(): void
+    {
+        $preference = Preference::factory()->create();
+        $this->notifyWithMerchant($preference);
+        $this->notifyWithMerchant($preference);
+        $preference->notifications()->first()->markAsRead();
+
+        $this->getJson("/api/v1/preferences/{$preference->token}/notifications/unread-count")
+            ->assertOk()
+            ->assertJsonPath('data.unread_count', 1);
+    }
+
+    public function test_unread_count_does_not_count_another_preferences_notifications(): void
+    {
+        $preference = Preference::factory()->create();
+        $otherPreference = Preference::factory()->create();
+        $this->notifyWithMerchant($otherPreference);
+
+        $this->getJson("/api/v1/preferences/{$preference->token}/notifications/unread-count")
+            ->assertOk()
+            ->assertJsonPath('data.unread_count', 0);
+    }
+
+    public function test_unread_count_returns_404_for_an_unknown_token(): void
+    {
+        $this->getJson('/api/v1/preferences/not-a-real-token/notifications/unread-count')
+            ->assertNotFound();
+    }
+
     public function test_mark_read_sets_read_at(): void
     {
         $preference = Preference::factory()->create();

@@ -28,7 +28,8 @@ class UpsertPromotionFromDtoAction
     public function handle(Wallet $wallet, PromotionDTO $dto, ScrapeRun $scrapeRun): array
     {
         return DB::transaction(function () use ($wallet, $dto, $scrapeRun) {
-            $merchant = $this->resolveMerchant->handle($dto->merchantName, $dto->merchantIconUrl);
+            $merchantName = $this->isBannerText($dto->merchantName) ? $wallet->name : $dto->merchantName;
+            $merchant = $this->resolveMerchant->handle($merchantName, $dto->merchantIconUrl);
             $category = $this->resolveCategory->handle($dto->category);
 
             $identityHash = $this->hasher->hash(
@@ -130,5 +131,26 @@ class UpsertPromotionFromDtoAction
     private function nullIfZero(?float $value): ?float
     {
         return $value === 0.0 ? null : $value;
+    }
+
+    /**
+     * Some sources (Cuenta DNI, MODO) occasionally have no real merchant for
+     * a promotion — a wallet-wide campaign — and send a marketing sentence
+     * ("¡Al super con Cuenta DNI!") in the field that's supposed to be the
+     * merchant name. Detected by the same shape a human would recognize it
+     * by: a full exclamation or question, not a name. Redirected to the
+     * wallet's own name instead of creating a one-off fake merchant for
+     * every distinct banner sentence.
+     */
+    private function isBannerText(string $name): bool
+    {
+        $trimmed = trim($name);
+
+        if ($trimmed === '') {
+            return false;
+        }
+
+        return (str_starts_with($trimmed, '¡') && str_ends_with($trimmed, '!'))
+            || (str_starts_with($trimmed, '¿') && str_ends_with($trimmed, '?'));
     }
 }

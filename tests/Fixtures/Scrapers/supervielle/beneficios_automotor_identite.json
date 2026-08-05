@@ -1,0 +1,41 @@
+{
+    "codigo": "OK",
+    "descripcion": "Se ejecutó el servicio correctamente",
+    "beneficios": [
+        {
+            "dias": ["lunes", " martes", " miércoles", " jueves", " viernes", " sábado", " domingo"],
+            "cuotas": ["12"],
+            "rubro": "Automotor",
+            "logo": "https://content-us-7.content-cms.com/8ba19f21-9a97-4525-8886-f54d823a5cea/dxdam/logos-beneficios/bridgestone.png",
+            "marca": "Bridgestone",
+            "esTarjetaCredito": true,
+            "esTarjetaDebito": false,
+            "descripcionTarjetas": "Nos renovamos, renovate con estos beneficios para vos",
+            "tope": null,
+            "esIdentite": true,
+            "esDestacado": false,
+            "zonas": "",
+            "id": "5b14f1fca7edb507bb908d",
+            "fechaVigenciaDesde": "2026-04-01",
+            "fechaVigenciaHasta": "2026-11-30"
+        },
+        {
+            "dias": ["martes", " miércoles", " jueves"],
+            "cuotas": null,
+            "rubro": "Automotor",
+            "logo": "https://content-us-7.content-cms.com/8ba19f21-9a97-4525-8886-f54d823a5cea/dxdam/logos-beneficios/modo.png",
+            "marca": "Autoshop con MODO",
+            "esTarjetaCredito": true,
+            "esTarjetaDebito": true,
+            "descripcionTarjetas": "Nos renovamos, renovate con estos beneficios para vos",
+            "tope": null,
+            "esIdentite": true,
+            "esDestacado": false,
+            "descuento": "15%",
+            "zonas": "",
+            "id": "5114f1fca7edb507bb908d",
+            "fechaVigenciaDesde": "2026-05-26",
+            "fechaVigenciaHasta": "2026-11-30"
+        }
+    ]
+}

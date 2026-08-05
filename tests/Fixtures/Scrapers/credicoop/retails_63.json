@@ -1,0 +1,36 @@
+{
+  "search": {"shop_id": 1154, "benefit_id": 63, "get_retails": true, "offset": 0, "limit": 12, "next_page": 12},
+  "benefits": [
+    {
+      "shop_name": "Colorshop",
+      "id": 63,
+      "benefit_id": 63,
+      "shop_id": 1154,
+      "retails_count": 2,
+      "retails": [
+        {
+          "id": 2370,
+          "shop_id": 1154,
+          "address_street": "Av. Santa Rosa 198",
+          "address_city": "25 De Mayo",
+          "address_state": "Buenos Aires",
+          "lat": -34.6054996,
+          "lng": -58.37109,
+          "is_virtual_retail": 0
+        },
+        {
+          "id": 99001,
+          "shop_id": 1154,
+          "address_street": null,
+          "address_city": null,
+          "address_state": null,
+          "lat": null,
+          "lng": null,
+          "is_virtual_retail": -1
+        }
+      ]
+    }
+  ],
+  "benefits_total": 1,
+  "version": "1.0.32"
+}

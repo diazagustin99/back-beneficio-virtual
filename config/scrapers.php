@@ -1,7 +1,10 @@
 <?php
 
+use App\Scrapers\BancoCiudad\BancoCiudadScraper;
 use App\Scrapers\Brubank\BrubankScraper;
+use App\Scrapers\Credicoop\CredicoopScraper;
 use App\Scrapers\CuentaDni\CuentaDniScraper;
+use App\Scrapers\Galicia\GaliciaScraper;
 use App\Scrapers\Icbc\IcbcScraper;
 use App\Scrapers\Macro\MacroScraper;
 use App\Scrapers\MercadoPago\MercadoPagoScraper;
@@ -9,7 +12,9 @@ use App\Scrapers\Modo\ModoScraper;
 use App\Scrapers\NaranjaX\NaranjaXScraper;
 use App\Scrapers\PersonalPay\PersonalPayScraper;
 use App\Scrapers\Prex\PrexScraper;
+use App\Scrapers\Santander\SantanderScraper;
 use App\Scrapers\SemanaNacion\SemanaNacionScraper;
+use App\Scrapers\Supervielle\SupervielleScraper;
 use App\Scrapers\Uala\UalaScraper;
 
 return [
@@ -39,6 +44,11 @@ return [
         'macro' => MacroScraper::class,
         'prex' => PrexScraper::class,
         'icbc' => IcbcScraper::class,
+        'galicia' => GaliciaScraper::class,
+        'santander' => SantanderScraper::class,
+        'credicoop' => CredicoopScraper::class,
+        'banco_ciudad' => BancoCiudadScraper::class,
+        'supervielle' => SupervielleScraper::class,
     ],
 
 ];

@@ -28,6 +28,17 @@ class WalletSeeder extends Seeder
             'Macro',
             'Prex',
             'ICBC',
+            // Display name is the recognizable bank name; slug stays
+            // `galicia` on purpose, matching GaliciaScraper::walletSlug().
+            ['slug' => 'galicia', 'name' => 'Banco Galicia'],
+            // Slug stays `santander` on purpose, matching
+            // SantanderScraper::walletSlug().
+            ['slug' => 'santander', 'name' => 'Santander Río'],
+            ['slug' => 'credicoop', 'name' => 'Banco Credicoop'],
+            ['slug' => 'banco_ciudad', 'name' => 'Banco Ciudad'],
+            // Slug stays `supervielle` on purpose, matching
+            // SupervielleScraper::walletSlug().
+            ['slug' => 'supervielle', 'name' => 'Banco Supervielle'],
         ];
 
         foreach ($wallets as $wallet) {

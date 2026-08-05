@@ -1,0 +1,103 @@
+{
+  "items": [
+    {
+      "id": 7476,
+      "idPromotion": 13652,
+      "startDatePublication": "2026-07-16T00:00:00",
+      "endDatePublication": "2026-08-27T00:00:00",
+      "monday": false,
+      "tuesday": false,
+      "wednesday": false,
+      "thursday": true,
+      "friday": false,
+      "saturday": false,
+      "sunday": false,
+      "fullWeek": false,
+      "multiPublication": true,
+      "customerDiscount": 30,
+      "topAmount": null,
+      "additionalText": "<p>Exclusivo pagando sin contacto desde el celu con <strong>NFC</strong>, a través de <strong>Apple Pay</strong> y <strong>Google Pay</strong>.</p><p></p><p>Exclusivo para locales físicos. No válido para venta online y/o Coto Digital.</p><p></p><p>El descuento se aplicará en línea de caja, al momento de realizar el pago.</p>",
+      "monthlyCut": true,
+      "initialQuote": 0,
+      "finalQuote": 0,
+      "interestFreeFees": false,
+      "specialCondition": null,
+      "order": 1,
+      "legal": "<p>Promoción vigente en la Ciudad Autónoma de Buenos Aires, Gran Buenos Aires, Neuquén, Mendoza, Entre Rios y Santa Fe, exclusivamente en todas las Sucursales Físicas de Coto (“Coto”) (el “Territorio”) todos los días jueves. Promoción vigente para pagos NFC utilizando la Tarjeta Santander Visa débito a través de Apple Pay o Google Pay. LA PROMOCIÓN NO APLICA PARA PAGOS QR. Durante la Vigencia de la Promoción, el Participante que realice exitosamente un pago sin contacto con una Tarjeta Visa a través de las Billeteras NFC en Coto, recibirá un descuento del 30%. El descuento se aplicará en línea de caja, al momento de realizar el pago. Participan de la Promoción únicamente las tiendas presenciales de Coto. No válido para venta online y/o Coto Digital. No acumulable con otras promociones vigentes.</p>",
+      "benefitType": {
+        "id": 1,
+        "description": "Ahorro",
+        "code": "A"
+      },
+      "paymentType": {
+        "id": 2,
+        "description": "Contactless",
+        "code": "C"
+      },
+      "paymentMethod": null,
+      "frecuency": {
+        "id": 1,
+        "description": "No Aplica",
+        "code": "N"
+      },
+      "tag": {
+        "id": 7,
+        "description": "Exclusivo Visa",
+        "code": "EXV",
+        "status": true,
+        "colorCode": "#9E3667"
+      },
+      "brands": [
+        {
+          "id": 131,
+          "code": "",
+          "name": "Coto",
+          "desktopImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Coto_desktopImage.png",
+          "desktopMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/coto_desktopMinImage.png",
+          "mobileImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Coto_mobileImage.png",
+          "mobileMinImage": "https://microfe.santander.com.ar/premify/benefits/assets/images/Coto_mobileMinImage.png",
+          "active": true,
+          "order": 2,
+          "benefitDescription": null,
+          "colorCode": "",
+          "brandType": {
+            "id": 1,
+            "description": "Standar",
+            "code": "STA",
+            "active": true
+          }
+        }
+      ],
+      "relatedPublications": [],
+      "categories": [
+        {
+          "id": 16,
+          "description": "Supermercados",
+          "code": "SUP"
+        },
+        {
+          "id": 56,
+          "description": "Destacado",
+          "code": "DES"
+        },
+        {
+          "id": 58,
+          "description": "Exclusiva Visa",
+          "code": "EXV"
+        },
+        {
+          "id": 417,
+          "description": "Everyday",
+          "code": "DAY"
+        }
+      ],
+      "texts": {
+        "title": "30% de ahorro",
+        "description": "Sin tope de reintegro",
+        "discount": 30,
+        "untilDiscount": false
+      }
+    }
+  ],
+  "totalItems": 1
+}
