@@ -4,6 +4,7 @@ namespace App\Scrapers\Supervielle;
 
 use App\Contracts\Scrapers\WalletScraperInterface;
 use App\DTOs\PromotionDTO;
+use App\Models\Merchant;
 use App\Scrapers\Concerns\MakesHttpRequests;
 use App\Scrapers\Concerns\ParsesForeignDates;
 use RuntimeException;
@@ -337,12 +338,23 @@ class SupervielleScraper implements WalletScraperInterface
      */
     private function buildDto(array $item): ?PromotionDTO
     {
-        $merchantName = $this->stringOrNull($item['marca'] ?? null);
+        $rawMerchantName = $this->stringOrNull($item['marca'] ?? null);
         $id = $this->stringOrNull($item['id'] ?? null);
 
-        if ($merchantName === null || $id === null) {
+        if ($rawMerchantName === null || $id === null) {
             return null;
         }
+
+        // `$rawMerchantName` (with the suffix) is kept around for
+        // `resolvePaymentMethods()` below — it's the only signal that a
+        // promo requires paying via MODO specifically. `$merchantName`
+        // (the merchant's actual identity) never carries it, nor the
+        // "con Visa débito/Signature NFC" payment-method qualifier (see
+        // `Merchant::stripVisaSuffix()`), nor a customer-segment qualifier
+        // like "- Jubilados" (see `Merchant::stripSegmentQualifierSuffix()`).
+        $merchantName = Merchant::stripSegmentQualifierSuffix(
+            Merchant::stripVisaSuffix(Merchant::stripModoSuffix($rawMerchantName))
+        );
 
         $detail = $this->fetchDetail($id);
         $legales = $this->stringOrNull($detail['legales'] ?? null);
@@ -370,7 +382,7 @@ class SupervielleScraper implements WalletScraperInterface
             terms: $terms,
             url: self::DETAIL_PAGE_BASE.$id,
             externalId: $id,
-            paymentMethods: $this->resolvePaymentMethods($item, $merchantName),
+            paymentMethods: $this->resolvePaymentMethods($item, $rawMerchantName),
             locations: [],
             rawPayload: $detail ?? $item,
         );

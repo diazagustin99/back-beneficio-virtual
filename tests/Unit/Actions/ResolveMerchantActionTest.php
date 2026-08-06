@@ -135,4 +135,26 @@ class ResolveMerchantActionTest extends TestCase
         $this->assertSame('Riadigos Carrefour', $resolved->name);
         $this->assertSame(2, Merchant::count());
     }
+
+    public function test_a_known_alias_resolves_to_the_canonical_merchant_instead_of_a_duplicate(): void
+    {
+        config(['merchant_aliases.aerolineasarg' => 'Aerolíneas Argentinas']);
+
+        $merchant = app(ResolveMerchantAction::class)->handle('Aerolineas Arg');
+
+        $this->assertSame('Aerolíneas Argentinas', $merchant->name);
+        $this->assertSame(1, Merchant::count());
+    }
+
+    public function test_the_alias_and_the_canonical_name_both_resolve_to_the_same_row(): void
+    {
+        config(['merchant_aliases.aerolineasarg' => 'Aerolíneas Argentinas']);
+        $action = app(ResolveMerchantAction::class);
+
+        $viaCanonical = $action->handle('Aerolíneas Argentinas');
+        $viaAlias = $action->handle('Aerolineas Arg');
+
+        $this->assertSame($viaCanonical->id, $viaAlias->id);
+        $this->assertSame(1, Merchant::count());
+    }
 }

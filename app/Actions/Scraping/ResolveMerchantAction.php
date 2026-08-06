@@ -16,13 +16,18 @@ class ResolveMerchantAction
     {
         $trimmedName = trim($name);
 
-        $merchant = Merchant::where('normalized_name', Merchant::normalize($trimmedName))->first()
-            ?? $this->wordMatcher->findSingleMatch($trimmedName);
+        // A variant name (e.g. "Aerolinea Arg") resolves to the canonical
+        // merchant's real name (e.g. "Aerolíneas Argentinas") instead of
+        // creating a near-duplicate — see config/merchant_aliases.php.
+        $resolvedName = config('merchant_aliases.'.Merchant::normalize($trimmedName)) ?? $trimmedName;
+
+        $merchant = Merchant::where('normalized_name', Merchant::normalize($resolvedName))->first()
+            ?? $this->wordMatcher->findSingleMatch($resolvedName);
 
         if ($merchant === null) {
             $merchant = Merchant::create([
-                'name' => $trimmedName,
-                'slug' => Str::slug($trimmedName),
+                'name' => $resolvedName,
+                'slug' => Str::slug($resolvedName),
                 'logo_url' => $iconUrl,
             ]);
         } elseif ($iconUrl !== null && $merchant->logo_url !== $iconUrl) {

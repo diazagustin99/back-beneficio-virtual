@@ -94,9 +94,12 @@ class SupervielleScraperTest extends TestCase
 
         // Autoshop con MODO: `legales` says "ahorro", never "reintegro" —
         // classified as an instant discount, not cashback, despite being a
-        // MODO-branded promo.
+        // MODO-branded promo. The "con MODO" suffix is stripped from the
+        // merchant's own name (it isn't part of the real business's
+        // identity — see `cleanMerchantName()`) but still detected for
+        // `paymentMethods` below.
         $autoshop = $promotions[1];
-        $this->assertSame('Autoshop con MODO', $autoshop->merchantName);
+        $this->assertSame('Autoshop', $autoshop->merchantName);
         $this->assertSame('15% de descuento', $autoshop->title);
         $this->assertSame(15.0, $autoshop->discountPercentage);
         $this->assertNull($autoshop->cashbackPercentage);
@@ -143,9 +146,10 @@ class SupervielleScraperTest extends TestCase
         // Alta Vista Wines con MODO: only reachable via the "Identité"
         // rubro list (Bodegas doesn't exist under "Clásico" at all) —
         // proves the union-of-both-segments' rubro sweep, not just the
-        // task's own reference "automotor" category.
+        // task's own reference "automotor" category. Same suffix-stripping
+        // as Autoshop above.
         $altaVista = $promotions[4];
-        $this->assertSame('Alta Vista Wines con MODO', $altaVista->merchantName);
+        $this->assertSame('Alta Vista Wines', $altaVista->merchantName);
         $this->assertSame('Bodegas', $altaVista->category);
         $this->assertSame('30% de reintegro y 3 cuotas sin interés', $altaVista->title);
         $this->assertNull($altaVista->discountPercentage);
@@ -154,6 +158,92 @@ class SupervielleScraperTest extends TestCase
         $this->assertSame(30000.0, $altaVista->reimbursementCap);
         $this->assertSame(['Tarjeta de crédito', 'MODO'], $altaVista->paymentMethods);
         $this->assertSame('5b0c9dcbbce6bd0fae8c', $altaVista->externalId);
+    }
+
+    /**
+     * Regression case for a real Supervielle incident: several rubros carry
+     * a segment-restricted variant of the same real business (e.g. "Disco",
+     * eligible-for-retirees promo scraped as "Disco - Jubilados") — the
+     * qualifier suffix must be stripped independently of the "con MODO"
+     * one, since it appears with no MODO involvement at all.
+     */
+    public function test_strips_a_customer_segment_qualifier_suffix_from_the_merchant_name(): void
+    {
+        Http::preventStrayRequests();
+        Http::fake([
+            'www.supervielle.com.ar/api/rubros?esIdentite=false' => Http::response([
+                'codigo' => 'OK', 'rubros' => [['id' => 1, 'nombre' => 'Supermercados']],
+            ]),
+            'www.supervielle.com.ar/api/rubros?esIdentite=true' => Http::response([
+                'codigo' => 'OK', 'rubros' => [],
+            ]),
+            'www.supervielle.com.ar/api/beneficios?rubro=Supermercados&esIdentite=false' => Http::response([
+                'codigo' => 'OK',
+                'beneficios' => [[
+                    'dias' => ['lunes'],
+                    'cuotas' => null,
+                    'rubro' => 'Supermercados',
+                    'logo' => null,
+                    'marca' => 'Disco - Jubilados',
+                    'esTarjetaCredito' => true,
+                    'esTarjetaDebito' => false,
+                    'tope' => null,
+                    'descuento' => '10%',
+                    'id' => 'disco-jubilados-1',
+                    'fechaVigenciaDesde' => null,
+                    'fechaVigenciaHasta' => null,
+                ]],
+            ]),
+            'www.supervielle.com.ar/api/beneficio?id=disco-jubilados-1' => Http::response(null, 500),
+        ]);
+
+        $promotions = iterator_to_array((new SupervielleScraper)->scrape());
+
+        $this->assertCount(1, $promotions);
+        $this->assertSame('Disco', $promotions[0]->merchantName);
+    }
+
+    /**
+     * Regression case for a real Supervielle incident: "COTO con Visa
+     * débito NFC" is the real "Coto" supermarket chain — the "con Visa"
+     * suffix (and anything after it, e.g. "débito NFC"/"Signature NFC") is
+     * the card-brand eligibility marker, never part of the merchant's own
+     * identity, same pattern as the "con MODO" suffix.
+     */
+    public function test_strips_a_con_visa_suffix_from_the_merchant_name(): void
+    {
+        Http::preventStrayRequests();
+        Http::fake([
+            'www.supervielle.com.ar/api/rubros?esIdentite=false' => Http::response([
+                'codigo' => 'OK', 'rubros' => [['id' => 1, 'nombre' => 'Supermercados']],
+            ]),
+            'www.supervielle.com.ar/api/rubros?esIdentite=true' => Http::response([
+                'codigo' => 'OK', 'rubros' => [],
+            ]),
+            'www.supervielle.com.ar/api/beneficios?rubro=Supermercados&esIdentite=false' => Http::response([
+                'codigo' => 'OK',
+                'beneficios' => [[
+                    'dias' => ['lunes'],
+                    'cuotas' => null,
+                    'rubro' => 'Supermercados',
+                    'logo' => null,
+                    'marca' => 'COTO con Visa débito NFC',
+                    'esTarjetaCredito' => false,
+                    'esTarjetaDebito' => true,
+                    'tope' => null,
+                    'descuento' => '30%',
+                    'id' => 'coto-visa-1',
+                    'fechaVigenciaDesde' => null,
+                    'fechaVigenciaHasta' => null,
+                ]],
+            ]),
+            'www.supervielle.com.ar/api/beneficio?id=coto-visa-1' => Http::response(null, 500),
+        ]);
+
+        $promotions = iterator_to_array((new SupervielleScraper)->scrape());
+
+        $this->assertCount(1, $promotions);
+        $this->assertSame('COTO', $promotions[0]->merchantName);
     }
 
     public function test_returns_no_promotions_when_both_segments_have_no_rubros(): void
