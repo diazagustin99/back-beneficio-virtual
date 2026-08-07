@@ -14,12 +14,12 @@ class DispatchDailyScrapesActionTest extends TestCase
 {
     use LazilyRefreshDatabase;
 
-    public function test_dispatches_one_job_per_active_wallet(): void
+    public function test_dispatches_one_job_per_active_wallet_with_a_registered_scraper(): void
     {
         Queue::fake();
 
-        $active = Wallet::factory()->count(2)->create();
-        Wallet::factory()->inactive()->create();
+        $active = collect(['mercado_pago', 'uala'])->map(fn (string $slug) => Wallet::factory()->create(['slug' => $slug]));
+        Wallet::factory()->inactive()->create(['slug' => 'personal_pay']);
 
         app(DispatchDailyScrapesAction::class)->handle();
 
@@ -32,6 +32,25 @@ class DispatchDailyScrapesActionTest extends TestCase
                 fn (ScrapeWalletJob $job) => $job->wallet->is($wallet),
             );
         }
+    }
+
+    /**
+     * The scenario `WalletScraperRegistry::has()` exists for: an
+     * attribution-only wallet (e.g. a bank with no scraper of its own, only
+     * ever receiving what `ModoScraper` confirms is exclusive to it) would
+     * otherwise get a `ScrapeRun` dispatched every single day that's
+     * guaranteed to fail with `UnregisteredWalletScraperException`.
+     */
+    public function test_never_dispatches_a_wallet_with_no_registered_scraper(): void
+    {
+        Queue::fake();
+
+        Wallet::factory()->create(['slug' => 'bbva']);
+
+        app(DispatchDailyScrapesAction::class)->handle();
+
+        Queue::assertNotPushed(ScrapeWalletJob::class);
+        $this->assertSame(0, ScrapeRun::count());
     }
 
     public function test_wallet_filter_restricts_the_dispatch_to_the_given_slugs(): void

@@ -81,4 +81,20 @@ return [
     'arcoirissupersucbaigorriaelectro' => 'Arcoiris Supermercados',
     'arcoirisgroup' => 'Arcoiris Supermercados',
 
+    // Verificado contra el comercio ya existente "Natura Cosméticos":
+    // Personal Pay/Naranja X coinciden en rubro (Otros/Salud y bienestar,
+    // ambos compatibles con cosmética) con las promociones de Brubank/
+    // Santander de la variante corta "Natura".
+    'natura' => 'Natura Cosméticos',
+
+    // Verificado contra el comercio ya existente "Starbucks Coffee": mismas
+    // promociones de categoría Gastronomía (Personal Pay vs. Galicia).
+    'starbucks' => 'Starbucks Coffee',
+
+    // Verificado contra el comercio ya existente "Axion Energy": las
+    // promociones de MODO/BNA/Comafi bajo el nombre corto "Axion" ya
+    // incluyen "en Axion Energy" en su propio título, confirmando que es
+    // la misma estación de servicio, no un comercio distinto.
+    'axion' => 'Axion Energy',
+
 ];

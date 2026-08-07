@@ -165,6 +165,44 @@ class MacroScraperTest extends TestCase
     }
 
     /**
+     * Regression test for a real incident: Macro's own feed embeds
+     * payment-method tags directly in the promo's `name` field — confirmed
+     * live, e.g. "HAVANNA GOOGLE PAY APPLE PAY" for the real "Havanna", and
+     * even messier cases with the name repeated once per tag (e.g. "MISCUSI
+     * GOOGLE PAY MISCUSI APPLE PAY"). Never part of the merchant's actual
+     * identity, so every occurrence is stripped wherever it appears in the
+     * string, not just at the end.
+     */
+    public function test_strips_payment_method_tags_embedded_in_the_merchant_name(): void
+    {
+        Http::preventStrayRequests();
+        Http::fake([
+            'apipublic.macro.com.ar/v1/card-benefits/provinces/*' => function (Request $request) {
+                if (str_contains($request->url(), 'provinces/AR-C')) {
+                    return Http::response([
+                        'promotions' => [
+                            $this->rawListingPromo('P1', 'HAVANNA GOOGLE PAY APPLE PAY'),
+                            $this->rawListingPromo('P2', 'MOSTAZA GOOGLE PAY APPLE PAY MODO NFC'),
+                        ],
+                        'pagination' => ['next-page' => false],
+                    ]);
+                }
+
+                return Http::response(['promotions' => [], 'pagination' => ['next-page' => false]]);
+            },
+            'apipublic.macro.com.ar/v1/card-benefits/*' => Http::response(null, 404),
+        ]);
+
+        $promotions = iterator_to_array((new MacroScraper)->scrape());
+
+        $this->assertCount(2, $promotions);
+        $this->assertSame(
+            ['HAVANNA', 'MOSTAZA'],
+            array_values(array_map(fn ($p) => $p->merchantName, $promotions)),
+        );
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function rawListingPromo(string $id, string $name): array

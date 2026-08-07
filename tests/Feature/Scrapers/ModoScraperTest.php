@@ -8,6 +8,35 @@ use Tests\TestCase;
 
 class ModoScraperTest extends TestCase
 {
+    /**
+     * Builds a minimal detail page carrying only what `ModoScraper` reads
+     * out of the real one: `trigger_params` (always required for the
+     * enrichment to be considered usable at all), `promotion_type`, and
+     * `banks`.
+     *
+     * @param  array<string, mixed>  $triggerParams
+     * @param  list<array<string, mixed>>  $banks
+     */
+    private function detailHtml(?string $promotionType, array $banks, array $triggerParams = ['min_amount' => null]): string
+    {
+        $payload = [
+            'trigger_params' => $triggerParams,
+            'sections' => [],
+            'promotion_type' => $promotionType,
+            'banks' => $banks,
+        ];
+
+        // The real page's chunk is a JSON *string* whose decoded content is
+        // itself a JS object literal — so `$payload` is encoded once to get
+        // that object literal, then encoded again (as a plain string) to
+        // get the escaped form that belongs between the literal quotes
+        // `push([1,"..."])` already has in the HTML below.
+        $objectLiteral = json_encode($payload);
+        $escapedInner = substr(json_encode($objectLiteral), 1, -1);
+
+        return '<html><body><script>self.__next_f.push([1,"'.$escapedInner.'"])</script></body></html>';
+    }
+
     public function test_paginates_through_every_page_and_maps_fields(): void
     {
         Http::preventStrayRequests();
@@ -160,5 +189,169 @@ class ModoScraperTest extends TestCase
         // The rest of the detail payload is still valid and must still be used.
         $this->assertSame(20.0, $promotion->cashbackPercentage);
         $this->assertSame(20000.0, $promotion->reimbursementCap);
+    }
+
+    /**
+     * Confirmed live: MODO isn't itself a bank — a "Bancaria" promo's own
+     * `banks` array names exactly which bank it's exclusive to, and that
+     * bank gets its own promotion row (tagged "MODO" as a payment method)
+     * instead of one under `modo`.
+     */
+    public function test_a_promo_exclusive_to_a_bank_we_scrape_is_attributed_to_that_banks_wallet(): void
+    {
+        Http::preventStrayRequests();
+        Http::fake([
+            '*rewards/categories*' => Http::response('[]'),
+            '*rewards/slots*' => Http::response(json_encode([
+                'data' => ['cards' => [[
+                    'id' => 'demo-macro',
+                    'title' => '20% en Alba la Pérgola',
+                    'where' => 'Alba la Pérgola',
+                    'short_description' => '2507-Macro-AlbaLaPergola-20off',
+                    'days_of_week' => 'LMXJVSD',
+                    'status' => 'active',
+                    'promo_id' => 'promo-demo-macro',
+                    'slug' => 'macro-exclusive-demo',
+                    'calculated_status' => 'RUNNING',
+                    'debit_list' => [],
+                    'credit_list' => ['visa'],
+                ]]],
+                'metadata' => ['pagination' => ['page' => 1, 'page_results' => 1, 'total_pages' => 1, 'total_results' => 1]],
+            ])),
+            'www.modo.com.ar/promos/macro-exclusive-demo' => Http::response($this->detailHtml(
+                'Bancaria',
+                [['hub_bank_id' => 'macro', 'name' => 'Macro']],
+            )),
+        ]);
+
+        $promotions = iterator_to_array((new ModoScraper)->scrape());
+
+        $this->assertCount(1, $promotions);
+        $this->assertSame('macro', $promotions[0]->walletSlug);
+        $this->assertContains('MODO', $promotions[0]->paymentMethods);
+    }
+
+    /**
+     * Every bank MODO currently partners with has a wallet of ours (see
+     * `WalletSeeder`) — 8 with their own scraper, the rest attribution-only.
+     * "Comafi" is one of the attribution-only ones: no scraper of its own,
+     * but a "Bancaria" promo naming it still gets attributed to it.
+     */
+    public function test_a_promo_exclusive_to_an_attribution_only_banks_wallet_is_attributed_there(): void
+    {
+        Http::preventStrayRequests();
+        Http::fake([
+            '*rewards/categories*' => Http::response('[]'),
+            '*rewards/slots*' => Http::response(json_encode([
+                'data' => ['cards' => [[
+                    'id' => 'demo-comafi',
+                    'title' => '10% en Farmacias',
+                    'where' => 'Farmacias',
+                    'short_description' => '2507-Comafi-Farmacias-10off',
+                    'days_of_week' => 'LMXJVSD',
+                    'status' => 'active',
+                    'promo_id' => 'promo-demo-comafi',
+                    'slug' => 'comafi-exclusive-demo',
+                    'calculated_status' => 'RUNNING',
+                    'debit_list' => [],
+                    'credit_list' => ['visa'],
+                ]]],
+                'metadata' => ['pagination' => ['page' => 1, 'page_results' => 1, 'total_pages' => 1, 'total_results' => 1]],
+            ])),
+            'www.modo.com.ar/promos/comafi-exclusive-demo' => Http::response($this->detailHtml(
+                'Bancaria',
+                [['hub_bank_id' => 'comafi', 'name' => 'Comafi']],
+            )),
+        ]);
+
+        $promotions = iterator_to_array((new ModoScraper)->scrape());
+
+        $this->assertCount(1, $promotions);
+        $this->assertSame('comafi', $promotions[0]->walletSlug);
+        $this->assertContains('MODO', $promotions[0]->paymentMethods);
+    }
+
+    /**
+     * If MODO ever partners with a bank not yet in `BANK_WALLET_SLUGS`
+     * (every *current* partner bank already is one), that promo has
+     * nowhere of its own to go yet — it must fall back to `modo` exactly
+     * like a non-exclusive one would, not get lost.
+     */
+    public function test_a_promo_exclusive_to_an_unmapped_bank_falls_back_to_modo(): void
+    {
+        Http::preventStrayRequests();
+        Http::fake([
+            '*rewards/categories*' => Http::response('[]'),
+            '*rewards/slots*' => Http::response(json_encode([
+                'data' => ['cards' => [[
+                    'id' => 'demo-unmapped',
+                    'title' => '10% en Farmacias',
+                    'where' => 'Farmacias',
+                    'short_description' => '2507-Unmapped-Farmacias-10off',
+                    'days_of_week' => 'LMXJVSD',
+                    'status' => 'active',
+                    'promo_id' => 'promo-demo-unmapped',
+                    'slug' => 'unmapped-bank-demo',
+                    'calculated_status' => 'RUNNING',
+                    'debit_list' => [],
+                    'credit_list' => ['visa'],
+                ]]],
+                'metadata' => ['pagination' => ['page' => 1, 'page_results' => 1, 'total_pages' => 1, 'total_results' => 1]],
+            ])),
+            'www.modo.com.ar/promos/unmapped-bank-demo' => Http::response($this->detailHtml(
+                'Bancaria',
+                [['hub_bank_id' => 'a_future_bank_modo_has_not_announced_yet', 'name' => 'Banco Futuro']],
+            )),
+        ]);
+
+        $promotions = iterator_to_array((new ModoScraper)->scrape());
+
+        $this->assertCount(1, $promotions);
+        $this->assertSame('modo', $promotions[0]->walletSlug);
+    }
+
+    /**
+     * Confirmed live: a "Bancos adheridos" (any affiliated bank) promo's own
+     * `banks` array lists *every* one of MODO's partner banks, not a
+     * specific one — its `promotion_type` is never "Bancaria" ("Comercio"
+     * in this case), which is what actually distinguishes it from a
+     * genuinely exclusive promo. Must stay under `modo`.
+     */
+    public function test_a_promo_valid_with_any_affiliated_bank_stays_under_modo(): void
+    {
+        Http::preventStrayRequests();
+        Http::fake([
+            '*rewards/categories*' => Http::response('[]'),
+            '*rewards/slots*' => Http::response(json_encode([
+                'data' => ['cards' => [[
+                    'id' => 'demo-anybank',
+                    'title' => '30% en Farmacias Gassmann',
+                    'where' => 'Farmacias Gassmann',
+                    'short_description' => '2507-Gassmann-30off',
+                    'days_of_week' => 'LMXJVSD',
+                    'status' => 'active',
+                    'promo_id' => 'promo-demo-anybank',
+                    'slug' => 'anybank-demo',
+                    'calculated_status' => 'RUNNING',
+                    'debit_list' => [],
+                    'credit_list' => ['visa'],
+                ]]],
+                'metadata' => ['pagination' => ['page' => 1, 'page_results' => 1, 'total_pages' => 1, 'total_results' => 1]],
+            ])),
+            'www.modo.com.ar/promos/anybank-demo' => Http::response($this->detailHtml(
+                'Comercio',
+                [
+                    ['hub_bank_id' => 'macro', 'name' => 'Macro'],
+                    ['hub_bank_id' => 'nacion', 'name' => 'Banco Nación'],
+                    ['hub_bank_id' => 'galicia', 'name' => 'Galicia'],
+                ],
+            )),
+        ]);
+
+        $promotions = iterator_to_array((new ModoScraper)->scrape());
+
+        $this->assertCount(1, $promotions);
+        $this->assertSame('modo', $promotions[0]->walletSlug);
+        $this->assertNotContains('MODO', $promotions[0]->paymentMethods);
     }
 }

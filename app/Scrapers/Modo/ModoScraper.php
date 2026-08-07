@@ -35,6 +35,16 @@ use Throwable;
  * interleaved with it, and never allowed to abort the scrape: any failure
  * (network error, unexpected page shape, a `push()` payload that doesn't
  * decode) just leaves that one promo with its listing-only fields.
+ *
+ * MODO isn't a bank — it's a payment rail several banks plug their own
+ * cards into. Most of its catalog reflects that: each promo's own detail
+ * bundle carries a `banks` array naming exactly which bank(s) it's
+ * exclusive to (or, for a non-exclusive one, every partner bank — see
+ * `resolveExclusiveBankWalletSlugs()`). A promo confirmed exclusive to a
+ * bank we have a wallet for (`BANK_WALLET_SLUGS`, every one of MODO's own
+ * partner banks) is attributed straight to that bank's own wallet instead
+ * of `modo`, tagged with "MODO" as a required payment method — everything
+ * else stays under `modo` unchanged.
  */
 class ModoScraper implements WalletScraperInterface
 {
@@ -59,6 +69,41 @@ class ModoScraper implements WalletScraperInterface
         'V' => 'Viernes', 'S' => 'Sábado', 'D' => 'Domingo',
     ];
 
+    /**
+     * MODO's own `hub_bank_id` (from a promo's `banks` array) mapped to our
+     * wallet slug — confirmed live against MODO's full partner-bank list,
+     * every one of which now has a wallet of ours (see `WalletSeeder`).
+     * `ciudad` and `buepp` are two different `hub_bank_id`s MODO uses for
+     * the exact same real bank (Banco Ciudad's own app is branded "BUEPP";
+     * both share `bcra_code` "0029"), so both map to the one `banco_ciudad`
+     * wallet. The 8 banks we already scrape directly have their own
+     * scraper too (config/scrapers.php); the other 9 are attribution-only
+     * — they exist solely to receive whatever MODO confirms is exclusive
+     * to them (see `WalletScraperRegistry::has()`).
+     *
+     * @var array<string, string>
+     */
+    private const array BANK_WALLET_SLUGS = [
+        'nacion' => 'bna',
+        'macro' => 'macro',
+        'galicia' => 'galicia',
+        'santander' => 'santander',
+        'icbc' => 'icbc',
+        'credicoop' => 'credicoop',
+        'ciudad' => 'banco_ciudad',
+        'buepp' => 'banco_ciudad',
+        'supervielle' => 'supervielle',
+        'bbva' => 'bbva',
+        'comafi' => 'comafi',
+        'santafe' => 'banco_santa_fe',
+        'bancor' => 'bancor',
+        'entrerios' => 'banco_entre_rios',
+        'santacruz' => 'banco_santa_cruz',
+        'sanjuan' => 'banco_san_juan',
+        'corrientes' => 'banco_corrientes',
+        'yoy' => 'yoy',
+    ];
+
     public function walletSlug(): string
     {
         return 'modo';
@@ -73,11 +118,12 @@ class ModoScraper implements WalletScraperInterface
         $cards = $this->fetchAllCards();
 
         // Stage 2: only now, one promo at a time, try to enrich with its
-        // own detail page. Best-effort — see the class docblock.
+        // own detail page. Best-effort — see the class docblock. A single
+        // card can yield more than one DTO: a promo exclusive to two banks
+        // we both scrape (never seen live, but the data shape allows it)
+        // becomes one promotion per bank wallet.
         foreach ($cards as $card) {
-            $dto = $this->cardToDto($card, $categories);
-
-            if ($dto !== null) {
+            foreach ($this->cardToDtos($card, $categories) as $dto) {
                 yield $dto;
             }
         }
@@ -164,14 +210,15 @@ class ModoScraper implements WalletScraperInterface
     /**
      * @param  array<string, mixed>  $card
      * @param  array<int, string>  $categories
+     * @return list<PromotionDTO>
      */
-    private function cardToDto(array $card, array $categories): ?PromotionDTO
+    private function cardToDtos(array $card, array $categories): array
     {
         $merchant = $card['where'] ?? null;
         $title = $card['title'] ?? null;
 
         if (! is_string($merchant) || $merchant === '' || ! is_string($title) || $title === '') {
-            return null;
+            return [];
         }
 
         $mapCategoryId = $card['categories_whitelist']['categories'][0]['map_category'] ?? null;
@@ -214,8 +261,18 @@ class ModoScraper implements WalletScraperInterface
             $paymentMethods = $detailPaymentMethods !== [] ? $detailPaymentMethods : $paymentMethods;
         }
 
-        return new PromotionDTO(
-            walletSlug: $this->walletSlug(),
+        $bankWalletSlugs = $this->resolveExclusiveBankWalletSlugs($detail);
+        $walletSlugs = $bankWalletSlugs !== [] ? $bankWalletSlugs : [$this->walletSlug()];
+
+        // A promo attributed directly to a bank's own wallet still only
+        // works by paying through MODO — that's the one thing the bank's
+        // own wallet page can't otherwise tell the user.
+        if ($bankWalletSlugs !== [] && ! in_array('MODO', $paymentMethods, true)) {
+            $paymentMethods[] = 'MODO';
+        }
+
+        return array_map(fn (string $walletSlug) => new PromotionDTO(
+            walletSlug: $walletSlug,
             merchantName: $merchant,
             title: $title,
             merchantIconUrl: is_string($iconUrl) && $iconUrl !== '' ? $iconUrl : null,
@@ -232,7 +289,33 @@ class ModoScraper implements WalletScraperInterface
             externalId: is_string($externalId) ? $externalId : null,
             paymentMethods: $paymentMethods,
             rawPayload: $card,
-        );
+        ), $walletSlugs);
+    }
+
+    /**
+     * A `promotion_type` of "Bancaria" means this promo is exclusive to the
+     * bank(s) in its own `banks` array (confirmed live: always exactly one
+     * in every sample seen) — every other `promotion_type` ("Comercio",
+     * "Sistémica", "Bandera") is valid with *any* MODO-linked bank,
+     * confirmed live via a "Bancos adheridos" promo whose `banks` array
+     * lists all of MODO's ~17 partner banks, not a specific one. Every one
+     * of those 17 has an entry in `BANK_WALLET_SLUGS`, so the only way this
+     * resolves to no match at all is a missing detail payload (best-effort
+     * enrichment failed) — the caller falls back to `modo` in that case.
+     *
+     * @param  array{promotion_type: ?string, bank_hub_ids: list<string>}|null  $detail
+     * @return list<string>
+     */
+    private function resolveExclusiveBankWalletSlugs(?array $detail): array
+    {
+        if ($detail === null || ($detail['promotion_type'] ?? null) !== 'Bancaria') {
+            return [];
+        }
+
+        return array_values(array_unique(array_filter(array_map(
+            fn (string $hubBankId) => self::BANK_WALLET_SLUGS[$hubBankId] ?? null,
+            $detail['bank_hub_ids'],
+        ))));
     }
 
     /**
@@ -263,7 +346,15 @@ class ModoScraper implements WalletScraperInterface
      * a `promotion` key — so each is pulled out independently by name
      * rather than assuming a common enclosing object to decode as a whole.
      *
-     * @return array{trigger_params: array<string, mixed>, sections: array<string, mixed>}|null
+     * `banks` and `promotion_type` sit in this same chunk, alongside
+     * `trigger_params`/`sections` rather than inside them — confirmed live:
+     * every promo's `banks` array lists the bank(s) it's exclusive to (one
+     * entry, for a `promotion_type` of "Bancaria") or, for any other
+     * `promotion_type` ("Comercio", "Sistémica", "Bandera"), *every* bank
+     * MODO partners with — i.e. "works with any linked bank", not a
+     * specific one. See `resolveExclusiveBankWalletSlugs()`.
+     *
+     * @return array{trigger_params: array<string, mixed>, sections: array<string, mixed>, promotion_type: ?string, bank_hub_ids: list<string>}|null
      */
     private function extractPromotionBundle(string $html): ?array
     {
@@ -296,21 +387,47 @@ class ModoScraper implements WalletScraperInterface
             return [
                 'trigger_params' => $triggerParams,
                 'sections' => is_array($sections) ? $sections : [],
+                'promotion_type' => $this->extractPromotionType($decoded),
+                'bank_hub_ids' => $this->extractBankHubIds($decoded),
             ];
         }
 
         return null;
     }
 
-    /**
-     * Finds `"$key":{` in $haystack and returns the substring of its value,
-     * scanning forward and counting brace depth (string- and
-     * escape-aware) until it closes — without assuming anything about
-     * what wraps it. Returns null if the key isn't found or never closes.
-     */
-    private function extractBalancedJsonValue(string $haystack, string $key): ?string
+    private function extractPromotionType(string $decoded): ?string
     {
-        $needle = '"'.$key.'":{';
+        return preg_match('/"promotion_type":"([^"]*)"/', $decoded, $matches) === 1 ? $matches[1] : null;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function extractBankHubIds(string $decoded): array
+    {
+        $banksJson = $this->extractBalancedJsonValue($decoded, 'banks', '[', ']');
+        $banks = $banksJson !== null ? json_decode($banksJson, true) : null;
+
+        if (! is_array($banks)) {
+            return [];
+        }
+
+        return array_values(array_filter(array_map(
+            fn ($bank) => is_array($bank) && is_string($bank['hub_bank_id'] ?? null) ? $bank['hub_bank_id'] : null,
+            $banks,
+        )));
+    }
+
+    /**
+     * Finds `"$key":{` (or `"$key":[` when `$open`/`$close` are given as the
+     * bracket pair instead) in $haystack and returns the substring of its
+     * value, scanning forward and counting depth (string- and
+     * escape-aware) until it closes — without assuming anything about what
+     * wraps it. Returns null if the key isn't found or never closes.
+     */
+    private function extractBalancedJsonValue(string $haystack, string $key, string $open = '{', string $close = '}'): ?string
+    {
+        $needle = '"'.$key.'":'.$open;
         $start = strpos($haystack, $needle);
 
         if ($start === false) {
@@ -340,9 +457,9 @@ class ModoScraper implements WalletScraperInterface
 
             if ($char === '"') {
                 $inString = true;
-            } elseif ($char === '{') {
+            } elseif ($char === $open) {
                 $depth++;
-            } elseif ($char === '}') {
+            } elseif ($char === $close) {
                 $depth--;
 
                 if ($depth === 0) {

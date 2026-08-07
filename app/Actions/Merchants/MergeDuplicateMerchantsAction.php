@@ -22,7 +22,7 @@ class MergeDuplicateMerchantsAction
 
     /**
      * Safe to run more than once — once there's nothing left to merge, all
-     * five passes are simply no-ops.
+     * six passes are simply no-ops.
      *
      * @return list<array{variant: string, canonical: string, promotions_moved: int}>
      */
@@ -33,6 +33,7 @@ class MergeDuplicateMerchantsAction
             ...$this->mergeSentenceLikeNames(),
             ...$this->mergeAliasedNames(),
             ...$this->mergeSupervielleSuffixNames(),
+            ...$this->mergePaymentMethodTagNames(),
             ...$this->mergeGenericCoreNameDuplicates(),
         ]);
     }
@@ -166,6 +167,46 @@ class MergeDuplicateMerchantsAction
             $cleanName = Merchant::stripSegmentQualifierSuffix(
                 Merchant::stripVisaSuffix(Merchant::stripModoSuffix($variant->name))
             );
+
+            if ($cleanName === $variant->name) {
+                continue;
+            }
+
+            $canonical = Merchant::query()
+                ->where('normalized_name', Merchant::normalize($cleanName))
+                ->where('id', '!=', $variant->id)
+                ->first();
+
+            if ($canonical === null) {
+                $variant->update(['name' => $cleanName]);
+
+                continue;
+            }
+
+            $merges[] = $this->mergeInto($variant, $canonical);
+        }
+
+        return $merges;
+    }
+
+    /**
+     * Retroactive cleanup for `MacroScraper`'s own name-cleaning fix
+     * (`Merchant::stripPaymentMethodTags()`) — a scrape that ran before that
+     * fix existed already created merchants like "HAVANNA GOOGLE PAY APPLE
+     * PAY" for the real, already-existing "Havanna". Same merge-or-rename
+     * behaviour as `mergeSupervielleSuffixNames()` above, just driven by
+     * Macro's own structural rule instead of Supervielle's.
+     *
+     * @return list<array{variant: string, canonical: string, promotions_moved: int}>
+     */
+    private function mergePaymentMethodTagNames(): array
+    {
+        $merges = [];
+
+        $candidates = Merchant::query()->get(['id', 'name', 'logo_url']);
+
+        foreach ($candidates as $variant) {
+            $cleanName = Merchant::stripPaymentMethodTags($variant->name);
 
             if ($cleanName === $variant->name) {
                 continue;

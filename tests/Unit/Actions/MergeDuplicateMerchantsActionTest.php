@@ -272,6 +272,135 @@ class MergeDuplicateMerchantsActionTest extends TestCase
         $this->assertSame('Bridgestone', Merchant::sole()->name);
     }
 
+    /**
+     * Regression test for a real incident: Macro's own feed embeds payment
+     * -method tags directly in the merchant name — "HAVANNA GOOGLE PAY
+     * APPLE PAY" for the already-existing "Havanna".
+     */
+    public function test_merges_a_payment_method_tag_name_into_the_existing_clean_merchant(): void
+    {
+        $canonical = Merchant::factory()->create(['name' => 'Havanna']);
+        Promotion::factory()->create(['merchant_id' => $canonical->id]);
+        $variant = Merchant::factory()->create(['name' => 'HAVANNA GOOGLE PAY APPLE PAY']);
+        Promotion::factory()->create(['merchant_id' => $variant->id]);
+
+        $merges = app(MergeDuplicateMerchantsAction::class)->handle();
+
+        $this->assertCount(1, $merges);
+        $this->assertModelMissing($variant);
+        $this->assertSame(2, Promotion::where('merchant_id', $canonical->id)->count());
+    }
+
+    /**
+     * All 3 tags can stack on the same name ("MOSTAZA GOOGLE PAY APPLE PAY
+     * MODO NFC") — every occurrence is stripped, not just one — and it
+     * still renames cleanly when there's no existing canonical to merge
+     * into yet.
+     */
+    public function test_renames_a_payment_method_tag_name_when_the_canonical_merchant_does_not_exist_yet(): void
+    {
+        $variant = Merchant::factory()->create(['name' => 'MOSTAZA GOOGLE PAY APPLE PAY MODO NFC']);
+        Promotion::factory()->create(['merchant_id' => $variant->id]);
+
+        $merges = app(MergeDuplicateMerchantsAction::class)->handle();
+
+        $this->assertSame([], $merges);
+        $this->assertSame('MOSTAZA', $variant->fresh()->name);
+        $this->assertSame(1, Merchant::count());
+    }
+
+    /**
+     * Regression test for a real incident: some of Macro's entries repeat
+     * the whole name once per tag instead of just appending them — "MAS
+     * HISTORIAS GOOGLE PAY MAS HISTORIAS APPLE PAY" — which stripping the
+     * tags alone would leave as "Mas Historias Mas Historias". The exact
+     * repeat must collapse so it still merges into the real "Mas Historias".
+     */
+    public function test_merges_a_name_left_exactly_repeated_after_stripping_payment_method_tags(): void
+    {
+        $canonical = Merchant::factory()->create(['name' => 'Mas Historias']);
+        Promotion::factory()->create(['merchant_id' => $canonical->id]);
+        $variant = Merchant::factory()->create(['name' => 'MAS HISTORIAS GOOGLE PAY MAS HISTORIAS APPLE PAY']);
+        Promotion::factory()->create(['merchant_id' => $variant->id]);
+
+        $merges = app(MergeDuplicateMerchantsAction::class)->handle();
+
+        $this->assertCount(1, $merges);
+        $this->assertModelMissing($variant);
+        $this->assertSame(2, Promotion::where('merchant_id', $canonical->id)->count());
+    }
+
+    /**
+     * Deliberate, confirmed with the user: the repeat-collapse runs even
+     * when there's no payment-method tag to strip at all — running
+     * `merchants:merge-duplicates` for real caught plain "Clau Clau" this
+     * way too, same root doubling issue in Macro's feed either way.
+     */
+    public function test_merges_an_exactly_repeated_name_with_no_payment_method_tag_involved(): void
+    {
+        $canonical = Merchant::factory()->create(['name' => 'Clau']);
+        Promotion::factory()->create(['merchant_id' => $canonical->id]);
+        $variant = Merchant::factory()->create(['name' => 'Clau Clau']);
+        Promotion::factory()->create(['merchant_id' => $variant->id]);
+
+        $merges = app(MergeDuplicateMerchantsAction::class)->handle();
+
+        $this->assertCount(1, $merges);
+        $this->assertModelMissing($variant);
+        $this->assertSame(2, Promotion::where('merchant_id', $canonical->id)->count());
+    }
+
+    /**
+     * A truncated second half ("El Chucaro Cerro El Chucaro Cerro Appl",
+     * confirmed live) isn't an *exact* repeat — must be left alone rather
+     * than guessed at, same spirit as every other narrow structural rule
+     * in this class.
+     */
+    public function test_never_collapses_a_name_whose_repeated_half_is_not_an_exact_match(): void
+    {
+        $variant = Merchant::factory()->create(['name' => 'EL CHUCARO CERRO GOOGLE PAY EL CHUCARO CERRO APPL']);
+        Promotion::factory()->create(['merchant_id' => $variant->id]);
+
+        $merges = app(MergeDuplicateMerchantsAction::class)->handle();
+
+        $this->assertSame([], $merges);
+        $this->assertSame('EL CHUCARO CERRO EL CHUCARO CERRO APPL', $variant->fresh()->name);
+    }
+
+    /**
+     * Regression test for a real incident: Natura, Starbucks, and Axion each
+     * got scraped under a second, differently-worded name — all real config
+     * entries, not faked, so this fails if `config/merchant_aliases.php`
+     * regresses.
+     */
+    public function test_unifies_natura_starbucks_and_axion_via_the_real_config(): void
+    {
+        $natura = Merchant::factory()->create(['name' => 'Natura Cosméticos']);
+        Promotion::factory()->create(['merchant_id' => $natura->id]);
+        $naturaVariant = Merchant::factory()->create(['name' => 'Natura']);
+        Promotion::factory()->create(['merchant_id' => $naturaVariant->id]);
+
+        $starbucks = Merchant::factory()->create(['name' => 'Starbucks Coffee']);
+        Promotion::factory()->create(['merchant_id' => $starbucks->id]);
+        $starbucksVariant = Merchant::factory()->create(['name' => 'Starbucks']);
+        Promotion::factory()->create(['merchant_id' => $starbucksVariant->id]);
+
+        $axion = Merchant::factory()->create(['name' => 'Axion Energy']);
+        Promotion::factory()->create(['merchant_id' => $axion->id]);
+        $axionVariant = Merchant::factory()->create(['name' => 'Axion']);
+        Promotion::factory()->create(['merchant_id' => $axionVariant->id]);
+
+        app(MergeDuplicateMerchantsAction::class)->handle();
+
+        $this->assertModelMissing($naturaVariant);
+        $this->assertModelMissing($starbucksVariant);
+        $this->assertModelMissing($axionVariant);
+        $this->assertSame(2, Promotion::where('merchant_id', $natura->id)->count());
+        $this->assertSame(2, Promotion::where('merchant_id', $starbucks->id)->count());
+        $this->assertSame(2, Promotion::where('merchant_id', $axion->id)->count());
+        $this->assertSame(3, Merchant::count());
+    }
+
     public function test_merges_a_segment_qualifier_suffixed_name_into_the_existing_clean_merchant(): void
     {
         $canonical = Merchant::factory()->create(['name' => 'Disco']);

@@ -34,6 +34,31 @@ class WalletScraperRegistryTest extends TestCase
 
         $this->app->make(WalletScraperRegistry::class)->for($wallet);
     }
+
+    public function test_has_is_true_for_a_mapped_slug(): void
+    {
+        config(['scrapers.wallets' => [
+            'mercado_pago' => AlwaysEmptyScraperStub::class,
+        ]]);
+
+        $wallet = new Wallet(['slug' => 'mercado_pago']);
+
+        $this->assertTrue($this->app->make(WalletScraperRegistry::class)->has($wallet));
+    }
+
+    /**
+     * An attribution-only wallet (e.g. a bank with no scraper of its own,
+     * only ever receiving what `ModoScraper` confirms is exclusive to it)
+     * has no entry here at all — `has()` must say so without throwing.
+     */
+    public function test_has_is_false_for_an_attribution_only_wallet(): void
+    {
+        config(['scrapers.wallets' => []]);
+
+        $wallet = new Wallet(['slug' => 'bbva']);
+
+        $this->assertFalse($this->app->make(WalletScraperRegistry::class)->has($wallet));
+    }
 }
 
 class AlwaysEmptyScraperStub implements WalletScraperInterface

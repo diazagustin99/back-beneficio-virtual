@@ -39,6 +39,20 @@ class WalletSeeder extends Seeder
             // Slug stays `supervielle` on purpose, matching
             // SupervielleScraper::walletSlug().
             ['slug' => 'supervielle', 'name' => 'Banco Supervielle'],
+
+            // Attribution-only wallets — no scraper of their own (no entry
+            // in config/scrapers.php), only ever receiving a promotion
+            // ModoScraper confirms is exclusive to that bank (see
+            // ModoScraper::BANK_WALLET_SLUGS). Slugs match that map exactly.
+            ['slug' => 'bbva', 'name' => 'BBVA'],
+            ['slug' => 'comafi', 'name' => 'Banco Comafi'],
+            ['slug' => 'banco_santa_fe', 'name' => 'Banco Santa Fe'],
+            ['slug' => 'bancor', 'name' => 'BANCOR'],
+            ['slug' => 'banco_entre_rios', 'name' => 'Banco Entre Ríos'],
+            ['slug' => 'banco_santa_cruz', 'name' => 'Banco Santa Cruz'],
+            ['slug' => 'banco_san_juan', 'name' => 'Banco San Juan'],
+            ['slug' => 'banco_corrientes', 'name' => 'Banco Corrientes'],
+            ['slug' => 'yoy', 'name' => 'YOY'],
         ];
 
         foreach ($wallets as $wallet) {

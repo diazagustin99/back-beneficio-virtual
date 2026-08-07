@@ -5,6 +5,7 @@ namespace App\Scrapers\Macro;
 use App\Contracts\Scrapers\WalletScraperInterface;
 use App\DTOs\PromotionDTO;
 use App\DTOs\PromotionLocationDTO;
+use App\Models\Merchant;
 use App\Scrapers\Concerns\MakesHttpRequests;
 use App\Scrapers\Concerns\ParsesForeignDates;
 use Throwable;
@@ -164,11 +165,16 @@ class MacroScraper implements WalletScraperInterface
      */
     private function buildDto(string $id, array $listing, ?array $detail): ?PromotionDTO
     {
-        $merchant = $this->stringOrNull($detail['name'] ?? null) ?? $this->stringOrNull($listing['name'] ?? null);
+        $rawMerchant = $this->stringOrNull($detail['name'] ?? null) ?? $this->stringOrNull($listing['name'] ?? null);
 
-        if ($merchant === null) {
+        if ($rawMerchant === null) {
             return null;
         }
+
+        // Macro's own feed embeds payment-method tags directly in the name
+        // (e.g. "HAVANNA GOOGLE PAY APPLE PAY") — never part of the
+        // merchant's actual identity, see Merchant::stripPaymentMethodTags().
+        $merchant = Merchant::stripPaymentMethodTags($rawMerchant);
 
         $discount = $this->resolveDiscount($listing, $detail);
         $installments = $this->resolveInstallments($listing, $detail);

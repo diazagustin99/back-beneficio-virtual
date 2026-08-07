@@ -321,4 +321,60 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $this->assertSame(0, $run2->promotions_failed);
         $this->assertSame(ScrapeRunStatus::Success, $run2->status);
     }
+
+    /**
+     * The scenario `ModoScraper` exists for: a DTO whose `walletSlug` names
+     * a *different*, already-known wallet ends up stored there instead of
+     * under the source wallet — this is how a MODO promo confirmed
+     * exclusive to one bank gets attributed directly to that bank.
+     */
+    public function test_a_dto_naming_a_different_known_wallet_is_stored_under_that_wallet(): void
+    {
+        $modo = Wallet::factory()->create(['slug' => 'modo']);
+        $macro = Wallet::factory()->create(['slug' => 'macro']);
+        $scrapeRun = ScrapeRun::factory()->for($modo)->create();
+
+        app(SyncPromotionsFromScraperAction::class)->handle(
+            $modo,
+            $scrapeRun,
+            [$this->dto($macro, ['title' => 'Alba la Pérgola'])],
+        );
+
+        $promotion = Promotion::sole();
+        $this->assertSame($macro->id, $promotion->wallet_id);
+        $this->assertSame($modo->id, $promotion->lastScrapeRun->wallet_id);
+    }
+
+    /**
+     * The whole reason deactivation is now scoped by source: MODO
+     * attributing a promo to Macro's wallet must never touch what Macro's
+     * *own* scraper already put there, even when this run sends Macro's
+     * wallet zero DTOs.
+     */
+    public function test_attributing_a_promotion_to_another_wallet_never_deactivates_that_wallets_own_promotions(): void
+    {
+        $modo = Wallet::factory()->create(['slug' => 'modo']);
+        $macro = Wallet::factory()->create(['slug' => 'macro']);
+        $sync = app(SyncPromotionsFromScraperAction::class);
+
+        $sync->handle($macro, ScrapeRun::factory()->for($macro)->create(), [
+            $this->dto($macro, ['title' => 'Native Macro promo', 'externalId' => 'macro-native-1']),
+        ]);
+        $macroNative = Promotion::where('wallet_id', $macro->id)->sole();
+
+        $sync->handle($modo, ScrapeRun::factory()->for($modo)->create(), [
+            $this->dto($macro, ['title' => 'Alba la Pérgola', 'externalId' => 'modo-ext-1']),
+        ]);
+
+        $this->assertSame(2, Promotion::where('wallet_id', $macro->id)->count());
+        $this->assertTrue($macroNative->fresh()->is_active);
+
+        // A later MODO run with no bank-exclusive promo left for Macro must
+        // deactivate only the one it itself attributed, not Macro's own.
+        $sync->handle($modo, ScrapeRun::factory()->for($modo)->create(), []);
+
+        $this->assertTrue($macroNative->fresh()->is_active);
+        $modoAttributed = Promotion::where('wallet_id', $macro->id)->where('external_id', 'modo-ext-1')->sole();
+        $this->assertFalse($modoAttributed->fresh()->is_active);
+    }
 }

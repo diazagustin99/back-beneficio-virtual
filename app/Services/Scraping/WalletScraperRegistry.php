@@ -29,4 +29,19 @@ class WalletScraperRegistry
 
         return $this->container->make($map[$wallet->slug]);
     }
+
+    /**
+     * Whether this wallet has its own scraper at all — false for an
+     * attribution-only wallet (e.g. a bank that never has its own scraper,
+     * only ever receiving promotions `ModoScraper` confirms are exclusive
+     * to it). `DispatchDailyScrapesAction` uses this to never schedule a
+     * scrape that's guaranteed to fail with `UnregisteredWalletScraperException`.
+     */
+    public function has(Wallet $wallet): bool
+    {
+        /** @var array<string, class-string<WalletScraperInterface>> $map */
+        $map = config('scrapers.wallets', []);
+
+        return isset($map[$wallet->slug]);
+    }
 }

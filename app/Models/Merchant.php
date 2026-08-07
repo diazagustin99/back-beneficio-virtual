@@ -103,6 +103,65 @@ class Merchant extends Model
     }
 
     /**
+     * The payment-method tags Macro's own `card-benefits` API embeds
+     * directly in a promo's `name` field — confirmed live: the exact same
+     * business appears both under its clean name and under a variant with
+     * one or more of these tags appended (e.g. "HAVANNA GOOGLE PAY APPLE
+     * PAY" alongside the already-existing clean "Havanna"). Unlike the
+     * Supervielle suffixes above, these can appear anywhere in the string,
+     * not just trailing — Macro's own feed has cases like "MISCUSI GOOGLE
+     * PAY MISCUSI APPLE PAY" — so every occurrence is stripped, not just one
+     * anchored at the end.
+     *
+     * @var list<string>
+     */
+    private const array PAYMENT_METHOD_TAGS = ['GOOGLE PAY', 'APPLE PAY', 'MODO NFC'];
+
+    /**
+     * Strips every occurrence of `PAYMENT_METHOD_TAGS` from a merchant name
+     * and collapses the whitespace left behind. Applied both when Macro's
+     * scraper first resolves a name and retroactively against merchants an
+     * earlier scrape already created (`MergeDuplicateMerchantsAction`).
+     *
+     * Macro's feed doesn't just append these tags — some entries repeat the
+     * whole name once per tag instead (e.g. "MISCUSI GOOGLE PAY MISCUSI
+     * APPLE PAY", confirmed live), which stripping the tags alone would
+     * leave as "Miscusi Miscusi". `collapseExactRepeat()` cleans that up
+     * too — but only an *exact*, whole-string repeat: "El Chucaro Cerro El
+     * Chucaro Cerro Appl" (a truncated second half, also seen live) is left
+     * alone rather than guessed at.
+     *
+     * The repeat-collapse runs even when no tag was actually found (a name
+     * with no tag to strip is just handed to it unchanged first) — running
+     * `merchants:merge-duplicates` for real also caught plain "Clau Clau" ->
+     * "Clau" and "Bella Bella" -> "Bella" this way, no tag involved at all.
+     * Deliberate: Macro's feed doubling names is the same root issue either
+     * way, and a real business whose *own* name is deliberately the same
+     * word repeated (a "Duran Duran"-style case) hasn't been seen in this
+     * catalog — if one ever turns up, exclude it here explicitly rather
+     * than narrowing this back down.
+     */
+    public static function stripPaymentMethodTags(string $value): string
+    {
+        $pattern = implode('|', array_map(fn (string $tag) => preg_quote($tag, '/'), self::PAYMENT_METHOD_TAGS));
+        $stripped = preg_replace('/\b(?:'.$pattern.')\b/iu', '', $value);
+        $stripped = $stripped !== null ? trim(preg_replace('/\s+/', ' ', $stripped) ?? $stripped) : '';
+
+        return $stripped !== '' ? self::collapseExactRepeat($stripped) : $value;
+    }
+
+    /**
+     * Collapses a string made of the exact same phrase twice in a row,
+     * separated by whitespace (e.g. "Mas Historias Mas Historias" ->
+     * "Mas Historias"), case-insensitively. Returns `$value` unchanged if
+     * it isn't shaped that way.
+     */
+    private static function collapseExactRepeat(string $value): string
+    {
+        return preg_replace('/^(.+?)\s+\1$/iu', '$1', $value) ?? $value;
+    }
+
+    /**
      * @return HasMany<Promotion, $this>
      */
     public function promotions(): HasMany
