@@ -2,19 +2,28 @@
 
 namespace App\Jobs;
 
+use App\Actions\Scraping\FilterDuplicateBankDiscountsAction;
 use App\Actions\Scraping\SyncPromotionsFromScraperAction;
 use App\Enums\ScrapeRunStatus;
-use App\Exceptions\Scraping\UnregisteredWalletScraperException;
+use App\Exceptions\Scraping\UnregisteredMerchantScraperException;
+use App\Models\Merchant;
 use App\Models\ScrapeRun;
-use App\Models\Wallet;
-use App\Services\Scraping\WalletScraperRegistry;
+use App\Services\Scraping\MerchantScraperRegistry;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class ScrapeWalletJob implements ShouldBeUnique, ShouldQueue
+/**
+ * Sibling of `ScrapeWalletJob` for the merchant-scraping pipeline (see
+ * `MerchantScraperInterface`) — same body shape (mark running, resolve the
+ * scraper, sync), with one extra step in between: every DTO passes through
+ * `FilterDuplicateBankDiscountsAction` first, since a supermarket's own page
+ * can easily name the same wallet+day+discount a bank's own scraper already
+ * created independently.
+ */
+class ScrapeMerchantJob implements ShouldBeUnique, ShouldQueue
 {
     use Queueable;
 
@@ -28,12 +37,12 @@ class ScrapeWalletJob implements ShouldBeUnique, ShouldQueue
 
     /**
      * Guards against a manual rerun overlapping the scheduled one for the
-     * same wallet, on top of the schedule's own withoutOverlapping().
+     * same merchant, on top of the schedule's own withoutOverlapping().
      */
     public int $uniqueFor = 72000;
 
     public function __construct(
-        public readonly Wallet $wallet,
+        public readonly Merchant $merchant,
         public readonly ScrapeRun $scrapeRun,
     ) {
         $this->onQueue('default');
@@ -41,19 +50,22 @@ class ScrapeWalletJob implements ShouldBeUnique, ShouldQueue
 
     public function uniqueId(): string
     {
-        return (string) $this->wallet->id;
+        return (string) $this->merchant->id;
     }
 
-    public function handle(WalletScraperRegistry $registry, SyncPromotionsFromScraperAction $sync): void
-    {
+    public function handle(
+        MerchantScraperRegistry $registry,
+        FilterDuplicateBankDiscountsAction $filterDuplicates,
+        SyncPromotionsFromScraperAction $sync,
+    ): void {
         $this->scrapeRun->update([
             'status' => ScrapeRunStatus::Running,
             'started_at' => now(),
         ]);
 
         try {
-            $scraper = $registry->for($this->wallet);
-        } catch (UnregisteredWalletScraperException $e) {
+            $scraper = $registry->for($this->merchant);
+        } catch (UnregisteredMerchantScraperException $e) {
             $this->scrapeRun->update([
                 'status' => ScrapeRunStatus::Failed,
                 'finished_at' => now(),
@@ -63,7 +75,9 @@ class ScrapeWalletJob implements ShouldBeUnique, ShouldQueue
             return;
         }
 
-        $sync->handle($this->wallet, $this->scrapeRun, $scraper->scrape());
+        $dtos = $filterDuplicates->handle($this->merchant, $scraper->scrape());
+
+        $sync->handle($this->merchant, $this->scrapeRun, $dtos);
     }
 
     public function failed(?Throwable $exception): void
@@ -74,8 +88,8 @@ class ScrapeWalletJob implements ShouldBeUnique, ShouldQueue
             'error_message' => $exception?->getMessage(),
         ]);
 
-        Log::error('ScrapeWalletJob failed', [
-            'wallet_id' => $this->wallet->id,
+        Log::error('ScrapeMerchantJob failed', [
+            'merchant_id' => $this->merchant->id,
             'scrape_run_id' => $this->scrapeRun->id,
             'exception' => $exception,
         ]);

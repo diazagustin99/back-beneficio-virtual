@@ -6,6 +6,7 @@ use App\Actions\Scraping\SyncPromotionsFromScraperAction;
 use App\Actions\Scraping\UpsertPromotionFromDtoAction;
 use App\DTOs\PromotionDTO;
 use App\Enums\ScrapeRunStatus;
+use App\Models\Merchant;
 use App\Models\Promotion;
 use App\Models\PromotionSnapshot;
 use App\Models\PromotionSource;
@@ -39,7 +40,7 @@ class SyncPromotionsFromScraperActionTest extends TestCase
     public function test_creates_new_promotions(): void
     {
         $wallet = Wallet::factory()->create();
-        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+        $scrapeRun = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
 
         app(SyncPromotionsFromScraperAction::class)->handle(
             $wallet,
@@ -64,7 +65,7 @@ class SyncPromotionsFromScraperActionTest extends TestCase
     public function test_a_zero_discount_cashback_or_fixed_amount_is_stored_as_null(): void
     {
         $wallet = Wallet::factory()->create();
-        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+        $scrapeRun = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
 
         app(SyncPromotionsFromScraperAction::class)->handle(
             $wallet,
@@ -89,7 +90,7 @@ class SyncPromotionsFromScraperActionTest extends TestCase
     public function test_an_exclamatory_banner_sentence_as_merchant_name_resolves_to_the_wallet_name(): void
     {
         $wallet = Wallet::factory()->create(['name' => 'Cuenta DNI']);
-        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+        $scrapeRun = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
 
         app(SyncPromotionsFromScraperAction::class)->handle(
             $wallet,
@@ -104,7 +105,7 @@ class SyncPromotionsFromScraperActionTest extends TestCase
     public function test_an_interrogative_banner_sentence_as_merchant_name_resolves_to_the_wallet_name(): void
     {
         $wallet = Wallet::factory()->create(['name' => 'Cuenta DNI']);
-        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+        $scrapeRun = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
 
         app(SyncPromotionsFromScraperAction::class)->handle(
             $wallet,
@@ -119,7 +120,7 @@ class SyncPromotionsFromScraperActionTest extends TestCase
     public function test_a_merchant_name_that_merely_contains_punctuation_is_left_alone(): void
     {
         $wallet = Wallet::factory()->create(['name' => 'Cuenta DNI']);
-        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+        $scrapeRun = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
 
         app(SyncPromotionsFromScraperAction::class)->handle(
             $wallet,
@@ -136,10 +137,10 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $wallet = Wallet::factory()->create();
         $sync = app(SyncPromotionsFromScraperAction::class);
 
-        $run1 = ScrapeRun::factory()->for($wallet)->create();
+        $run1 = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
         $sync->handle($wallet, $run1, [$this->dto($wallet, ['title' => 'Promo v1', 'discountPercentage' => 10.0])]);
 
-        $run2 = ScrapeRun::factory()->for($wallet)->create();
+        $run2 = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
         $sync->handle($wallet, $run2, [$this->dto($wallet, ['title' => 'Promo v2', 'discountPercentage' => 20.0])]);
 
         $promotion = Promotion::sole();
@@ -159,10 +160,10 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $wallet = Wallet::factory()->create();
         $sync = app(SyncPromotionsFromScraperAction::class);
 
-        $run1 = ScrapeRun::factory()->for($wallet)->create();
+        $run1 = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
         $sync->handle($wallet, $run1, [$this->dto($wallet)]);
 
-        $run2 = ScrapeRun::factory()->for($wallet)->create();
+        $run2 = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
         $sync->handle($wallet, $run2, [$this->dto($wallet)]);
 
         $promotion = Promotion::sole();
@@ -180,10 +181,10 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $wallet = Wallet::factory()->create();
         $sync = app(SyncPromotionsFromScraperAction::class);
 
-        $run1 = ScrapeRun::factory()->for($wallet)->create();
+        $run1 = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
         $sync->handle($wallet, $run1, [$this->dto($wallet)]);
 
-        $run2 = ScrapeRun::factory()->for($wallet)->create();
+        $run2 = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
         $sync->handle($wallet, $run2, []);
 
         $promotion = Promotion::sole();
@@ -200,9 +201,9 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $wallet = Wallet::factory()->create();
         $sync = app(SyncPromotionsFromScraperAction::class);
 
-        $sync->handle($wallet, ScrapeRun::factory()->for($wallet)->create(), [$this->dto($wallet)]);
-        $sync->handle($wallet, ScrapeRun::factory()->for($wallet)->create(), []);
-        $sync->handle($wallet, ScrapeRun::factory()->for($wallet)->create(), [$this->dto($wallet)]);
+        $sync->handle($wallet, ScrapeRun::factory()->for($wallet, 'scrapeable')->create(), [$this->dto($wallet)]);
+        $sync->handle($wallet, ScrapeRun::factory()->for($wallet, 'scrapeable')->create(), []);
+        $sync->handle($wallet, ScrapeRun::factory()->for($wallet, 'scrapeable')->create(), [$this->dto($wallet)]);
 
         $promotion = Promotion::sole();
         $this->assertTrue($promotion->is_active);
@@ -215,9 +216,9 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $wallet = Wallet::factory()->create();
         $sync = app(SyncPromotionsFromScraperAction::class);
 
-        $sync->handle($wallet, ScrapeRun::factory()->for($wallet)->create(), [$this->dto($wallet, ['discountPercentage' => 10.0])]);
-        $sync->handle($wallet, ScrapeRun::factory()->for($wallet)->create(), []);
-        $sync->handle($wallet, ScrapeRun::factory()->for($wallet)->create(), [$this->dto($wallet, ['discountPercentage' => 30.0])]);
+        $sync->handle($wallet, ScrapeRun::factory()->for($wallet, 'scrapeable')->create(), [$this->dto($wallet, ['discountPercentage' => 10.0])]);
+        $sync->handle($wallet, ScrapeRun::factory()->for($wallet, 'scrapeable')->create(), []);
+        $sync->handle($wallet, ScrapeRun::factory()->for($wallet, 'scrapeable')->create(), [$this->dto($wallet, ['discountPercentage' => 30.0])]);
 
         $promotion = Promotion::sole();
         $this->assertTrue($promotion->is_active);
@@ -230,10 +231,10 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $wallet = Wallet::factory()->create();
         $sync = app(SyncPromotionsFromScraperAction::class);
 
-        $sync->handle($wallet, ScrapeRun::factory()->for($wallet)->create(), [
+        $sync->handle($wallet, ScrapeRun::factory()->for($wallet, 'scrapeable')->create(), [
             $this->dto($wallet, ['externalId' => null, 'title' => 'Promo sin id']),
         ]);
-        $sync->handle($wallet, ScrapeRun::factory()->for($wallet)->create(), [
+        $sync->handle($wallet, ScrapeRun::factory()->for($wallet, 'scrapeable')->create(), [
             $this->dto($wallet, ['externalId' => null, 'title' => 'Promo sin id']),
         ]);
 
@@ -248,12 +249,12 @@ class SyncPromotionsFromScraperActionTest extends TestCase
 
         $shared = ['merchantName' => 'Carrefour', 'title' => 'Same title', 'externalId' => 'ext-1'];
 
-        $sync->handle($walletA, ScrapeRun::factory()->for($walletA)->create(), [$this->dto($walletA, $shared)]);
-        $sync->handle($walletB, ScrapeRun::factory()->for($walletB)->create(), [$this->dto($walletB, $shared)]);
+        $sync->handle($walletA, ScrapeRun::factory()->for($walletA, 'scrapeable')->create(), [$this->dto($walletA, $shared)]);
+        $sync->handle($walletB, ScrapeRun::factory()->for($walletB, 'scrapeable')->create(), [$this->dto($walletB, $shared)]);
 
         $this->assertSame(2, Promotion::count());
 
-        $sync->handle($walletA, ScrapeRun::factory()->for($walletA)->create(), []);
+        $sync->handle($walletA, ScrapeRun::factory()->for($walletA, 'scrapeable')->create(), []);
 
         $promoA = Promotion::where('wallet_id', $walletA->id)->sole();
         $promoB = Promotion::where('wallet_id', $walletB->id)->sole();
@@ -265,7 +266,7 @@ class SyncPromotionsFromScraperActionTest extends TestCase
     public function test_one_failing_dto_does_not_abort_the_rest_of_the_batch(): void
     {
         $wallet = Wallet::factory()->create();
-        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+        $scrapeRun = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
 
         $mock = Mockery::mock(UpsertPromotionFromDtoAction::class);
         $mock->shouldReceive('handle')
@@ -299,13 +300,13 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $wallet = Wallet::factory()->create();
         $sync = app(SyncPromotionsFromScraperAction::class);
 
-        $sync->handle($wallet, ScrapeRun::factory()->for($wallet)->create(), [
+        $sync->handle($wallet, ScrapeRun::factory()->for($wallet, 'scrapeable')->create(), [
             $this->dto($wallet, ['externalId' => 'stays-unchanged']),
             $this->dto($wallet, ['externalId' => 'will-change', 'discountPercentage' => 5.0]),
             $this->dto($wallet, ['externalId' => 'will-disappear']),
         ]);
 
-        $run2 = ScrapeRun::factory()->for($wallet)->create();
+        $run2 = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
         $sync->handle($wallet, $run2, [
             $this->dto($wallet, ['externalId' => 'stays-unchanged']),
             $this->dto($wallet, ['externalId' => 'will-change', 'discountPercentage' => 50.0]),
@@ -332,7 +333,7 @@ class SyncPromotionsFromScraperActionTest extends TestCase
     {
         $modo = Wallet::factory()->create(['slug' => 'modo']);
         $macro = Wallet::factory()->create(['slug' => 'macro']);
-        $scrapeRun = ScrapeRun::factory()->for($modo)->create();
+        $scrapeRun = ScrapeRun::factory()->for($modo, 'scrapeable')->create();
 
         app(SyncPromotionsFromScraperAction::class)->handle(
             $modo,
@@ -342,7 +343,7 @@ class SyncPromotionsFromScraperActionTest extends TestCase
 
         $promotion = Promotion::sole();
         $this->assertSame($macro->id, $promotion->wallet_id);
-        $this->assertSame($modo->id, $promotion->lastScrapeRun->wallet_id);
+        $this->assertTrue($promotion->lastScrapeRun->scrapeable->is($modo));
     }
 
     /**
@@ -357,12 +358,12 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $macro = Wallet::factory()->create(['slug' => 'macro']);
         $sync = app(SyncPromotionsFromScraperAction::class);
 
-        $sync->handle($macro, ScrapeRun::factory()->for($macro)->create(), [
+        $sync->handle($macro, ScrapeRun::factory()->for($macro, 'scrapeable')->create(), [
             $this->dto($macro, ['title' => 'Native Macro promo', 'externalId' => 'macro-native-1']),
         ]);
         $macroNative = Promotion::where('wallet_id', $macro->id)->sole();
 
-        $sync->handle($modo, ScrapeRun::factory()->for($modo)->create(), [
+        $sync->handle($modo, ScrapeRun::factory()->for($modo, 'scrapeable')->create(), [
             $this->dto($macro, ['title' => 'Alba la Pérgola', 'externalId' => 'modo-ext-1']),
         ]);
 
@@ -371,10 +372,65 @@ class SyncPromotionsFromScraperActionTest extends TestCase
 
         // A later MODO run with no bank-exclusive promo left for Macro must
         // deactivate only the one it itself attributed, not Macro's own.
-        $sync->handle($modo, ScrapeRun::factory()->for($modo)->create(), []);
+        $sync->handle($modo, ScrapeRun::factory()->for($modo, 'scrapeable')->create(), []);
 
         $this->assertTrue($macroNative->fresh()->is_active);
         $modoAttributed = Promotion::where('wallet_id', $macro->id)->where('external_id', 'modo-ext-1')->sole();
         $this->assertFalse($modoAttributed->fresh()->is_active);
+    }
+
+    /**
+     * The other new source type, alongside `Wallet`: a supermarket scraper
+     * (see `MerchantScraperInterface`) — every DTO it produces already
+     * carries a real, resolvable `walletSlug` (from
+     * `ResolveWalletFromBankNameAction`, run *inside* the scraper itself),
+     * so the promotion lands under that wallet exactly like a wallet
+     * scraper's own DTO would.
+     */
+    public function test_a_merchant_source_stores_its_dtos_under_their_own_resolved_wallet(): void
+    {
+        $carrefour = Merchant::factory()->create(['name' => 'Carrefour', 'slug' => 'carrefour']);
+        $galicia = Wallet::factory()->create(['slug' => 'galicia']);
+        $scrapeRun = ScrapeRun::factory()->for($carrefour, 'scrapeable')->create();
+
+        app(SyncPromotionsFromScraperAction::class)->handle(
+            $carrefour,
+            $scrapeRun,
+            [$this->dto($galicia, ['merchantName' => 'Carrefour', 'title' => '20% con Galicia'])],
+        );
+
+        $promotion = Promotion::sole();
+        $this->assertSame($galicia->id, $promotion->wallet_id);
+        $this->assertSame($carrefour->id, $promotion->merchant_id);
+        $this->assertTrue($promotion->lastScrapeRun->scrapeable->is($carrefour));
+    }
+
+    /**
+     * A merchant source has no wallet of its own to fall back to (unlike a
+     * wallet source's "attribute it to myself" default) — an unresolvable
+     * `walletSlug` here means the scraper's own wallet resolution has a bug,
+     * so the DTO fails like any other rather than silently mis-attributing
+     * the promotion.
+     */
+    public function test_a_merchant_source_with_an_unresolvable_wallet_slug_fails_that_dto_instead_of_guessing(): void
+    {
+        $carrefour = Merchant::factory()->create(['name' => 'Carrefour', 'slug' => 'carrefour']);
+        $scrapeRun = ScrapeRun::factory()->for($carrefour, 'scrapeable')->create();
+
+        app(SyncPromotionsFromScraperAction::class)->handle(
+            $carrefour,
+            $scrapeRun,
+            [new PromotionDTO(
+                walletSlug: 'no-such-wallet',
+                merchantName: 'Carrefour',
+                title: '20% con un banco inexistente',
+                externalId: 'ext-1',
+            )],
+        );
+
+        $this->assertSame(0, Promotion::count());
+        $scrapeRun->refresh();
+        $this->assertSame(1, $scrapeRun->promotions_failed);
+        $this->assertSame(ScrapeRunStatus::Failed, $scrapeRun->status);
     }
 }

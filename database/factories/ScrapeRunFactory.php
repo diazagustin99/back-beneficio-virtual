@@ -20,7 +20,12 @@ class ScrapeRunFactory extends Factory
     public function definition(): array
     {
         return [
-            'wallet_id' => Wallet::factory(),
+            // Defaults to a wallet source — the overwhelming majority of
+            // real scrape_runs are (every wallet scraper, still). Pass
+            // `->for($merchant, 'scrapeable')` to override for a
+            // merchant-sourced run.
+            'scrapeable_type' => 'wallet',
+            'scrapeable_id' => Wallet::factory(),
             'status' => ScrapeRunStatus::Pending,
             'triggered_by' => 'schedule',
         ];

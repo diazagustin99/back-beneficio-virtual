@@ -1,0 +1,30 @@
+{
+    "data": {
+        "documents": [
+            {
+                "fields": [
+                    {"key": "id", "value": "bank-galicia"},
+                    {"key": "name", "value": "Banco Galicia"}
+                ]
+            },
+            {
+                "fields": [
+                    {"key": "id", "value": "bank-modo"},
+                    {"key": "name", "value": "Modo"}
+                ]
+            },
+            {
+                "fields": [
+                    {"key": "id", "value": "bank-credicoop-modo"},
+                    {"key": "name", "value": "Banco Credicoop MODO"}
+                ]
+            },
+            {
+                "fields": [
+                    {"key": "id", "value": "bank-anses"},
+                    {"key": "name", "value": "Anses"}
+                ]
+            }
+        ]
+    }
+}

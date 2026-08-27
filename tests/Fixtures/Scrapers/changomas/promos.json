@@ -1,0 +1,94 @@
+{
+    "data": {
+        "documents": [
+            {
+                "fields": [
+                    {"key": "id", "value": "promo-galicia"},
+                    {"key": "title", "value": "null"},
+                    {"key": "sub_title", "value": "Tope $10.000 por semana"},
+                    {"key": "discount_percentage", "value": "25"},
+                    {"key": "discounts_amount_installments", "value": "null"},
+                    {"key": "discounts_text_installments", "value": "null"},
+                    {"key": "discount_text_info", "value": "de descuento"},
+                    {"key": "active_from", "value": "2026-01-01T00:00:00+00:00"},
+                    {"key": "active_to", "value": "2026-12-31T00:00:00+00:00"},
+                    {"key": "legal", "value": "Legales Galicia"},
+                    {"key": "monday", "value": "false"},
+                    {"key": "tuesday", "value": "true"},
+                    {"key": "wednesday", "value": "false"},
+                    {"key": "thursday", "value": "false"},
+                    {"key": "friday", "value": "false"},
+                    {"key": "saturday", "value": "false"},
+                    {"key": "sunday", "value": "false"},
+                    {"key": "idBank", "value": "bank-galicia"}
+                ]
+            },
+            {
+                "fields": [
+                    {"key": "id", "value": "promo-modo"},
+                    {"key": "title", "value": "Desde MODO o APP de bancos adheridos"},
+                    {"key": "sub_title", "value": "null"},
+                    {"key": "discount_percentage", "value": "20"},
+                    {"key": "discounts_amount_installments", "value": "null"},
+                    {"key": "discounts_text_installments", "value": "null"},
+                    {"key": "discount_text_info", "value": "de reintegro"},
+                    {"key": "active_from", "value": "2026-01-01T00:00:00+00:00"},
+                    {"key": "active_to", "value": "2026-12-31T00:00:00+00:00"},
+                    {"key": "legal", "value": "Legales Modo"},
+                    {"key": "monday", "value": "true"},
+                    {"key": "tuesday", "value": "false"},
+                    {"key": "wednesday", "value": "false"},
+                    {"key": "thursday", "value": "false"},
+                    {"key": "friday", "value": "false"},
+                    {"key": "saturday", "value": "false"},
+                    {"key": "sunday", "value": "false"},
+                    {"key": "idBank", "value": "bank-modo"}
+                ]
+            },
+            {
+                "fields": [
+                    {"key": "id", "value": "promo-credicoop"},
+                    {"key": "title", "value": "null"},
+                    {"key": "sub_title", "value": "null"},
+                    {"key": "discount_percentage", "value": "null"},
+                    {"key": "discounts_amount_installments", "value": "12"},
+                    {"key": "discounts_text_installments", "value": "cuotas sin interés"},
+                    {"key": "discount_text_info", "value": "null"},
+                    {"key": "active_from", "value": "2026-01-01T00:00:00+00:00"},
+                    {"key": "active_to", "value": "2026-12-31T00:00:00+00:00"},
+                    {"key": "legal", "value": "Legales Credicoop"},
+                    {"key": "monday", "value": "true"},
+                    {"key": "tuesday", "value": "true"},
+                    {"key": "wednesday", "value": "true"},
+                    {"key": "thursday", "value": "true"},
+                    {"key": "friday", "value": "true"},
+                    {"key": "saturday", "value": "true"},
+                    {"key": "sunday", "value": "true"},
+                    {"key": "idBank", "value": "bank-credicoop-modo"}
+                ]
+            },
+            {
+                "fields": [
+                    {"key": "id", "value": "promo-anses"},
+                    {"key": "title", "value": "null"},
+                    {"key": "sub_title", "value": "null"},
+                    {"key": "discount_percentage", "value": "10"},
+                    {"key": "discounts_amount_installments", "value": "null"},
+                    {"key": "discounts_text_installments", "value": "null"},
+                    {"key": "discount_text_info", "value": "de descuento"},
+                    {"key": "active_from", "value": "2026-01-01T00:00:00+00:00"},
+                    {"key": "active_to", "value": "2026-12-31T00:00:00+00:00"},
+                    {"key": "legal", "value": "Legales Anses"},
+                    {"key": "monday", "value": "true"},
+                    {"key": "tuesday", "value": "false"},
+                    {"key": "wednesday", "value": "false"},
+                    {"key": "thursday", "value": "false"},
+                    {"key": "friday", "value": "false"},
+                    {"key": "saturday", "value": "false"},
+                    {"key": "sunday", "value": "false"},
+                    {"key": "idBank", "value": "bank-anses"}
+                ]
+            }
+        ]
+    }
+}

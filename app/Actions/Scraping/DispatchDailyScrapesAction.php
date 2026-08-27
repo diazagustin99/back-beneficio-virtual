@@ -4,7 +4,6 @@ namespace App\Actions\Scraping;
 
 use App\Enums\ScrapeRunStatus;
 use App\Jobs\ScrapeWalletJob;
-use App\Models\ScrapeRun;
 use App\Models\Wallet;
 use App\Services\Scraping\WalletScraperRegistry;
 
@@ -30,8 +29,7 @@ class DispatchDailyScrapesAction
             // UnregisteredWalletScraperException.
             ->filter(fn (Wallet $wallet) => $this->registry->has($wallet))
             ->each(function (Wallet $wallet) use ($triggeredBy) {
-                $scrapeRun = ScrapeRun::create([
-                    'wallet_id' => $wallet->id,
+                $scrapeRun = $wallet->scrapeRuns()->create([
                     'status' => ScrapeRunStatus::Pending,
                     'triggered_by' => $triggeredBy,
                 ]);

@@ -31,7 +31,7 @@ class ScrapeWalletJobTest extends TestCase
     public function test_successful_scrape_marks_the_run_as_successful_and_persists_promotions(): void
     {
         $wallet = Wallet::factory()->create(['slug' => 'mercado_pago']);
-        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+        $scrapeRun = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
 
         $dto = new PromotionDTO(
             walletSlug: 'mercado_pago',
@@ -55,7 +55,7 @@ class ScrapeWalletJobTest extends TestCase
     public function test_a_scraper_failure_marks_the_run_as_failed_once_the_queue_worker_calls_failed(): void
     {
         $wallet = Wallet::factory()->create(['slug' => 'mercado_pago']);
-        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+        $scrapeRun = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
 
         $registry = Mockery::mock(WalletScraperRegistry::class);
         $registry->shouldReceive('for')->once()->andReturn(
@@ -80,7 +80,7 @@ class ScrapeWalletJobTest extends TestCase
     public function test_an_unregistered_wallet_scraper_marks_the_run_as_failed_without_throwing(): void
     {
         $wallet = Wallet::factory()->create(['slug' => 'mercado_pago']);
-        $scrapeRun = ScrapeRun::factory()->for($wallet)->create();
+        $scrapeRun = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
 
         $registry = Mockery::mock(WalletScraperRegistry::class);
         $registry->shouldReceive('for')->once()->andThrow(

@@ -36,6 +36,18 @@ Schedule::command('promotions:merge-duplicates')
     ->onOneServer()
     ->runInBackground();
 
+// The 45-minute gap after promotions:scrape (03:00) is just a reasonable
+// buffer, not the real guarantee — DispatchDailySupermarketScrapesAction
+// itself checks that no wallet ScrapeRun is still pending/running today
+// before dispatching anything, and safely no-ops (retried on the next tick)
+// if wallet scraping is still going. See plans/0021-scrapping-supermercados.md.
+Schedule::command('promotions:scrape-supermarkets')
+    ->dailyAt('04:45')
+    ->timezone('America/Argentina/Buenos_Aires')
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->runInBackground();
+
 Schedule::command('promotions:deactivate-expired')
     ->dailyAt('05:30')
     ->timezone('America/Argentina/Buenos_Aires')

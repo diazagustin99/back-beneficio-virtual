@@ -7,11 +7,12 @@ use Database\Factories\ScrapeRunFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 #[Fillable([
-    'wallet_id',
+    'scrapeable_id',
+    'scrapeable_type',
     'status',
     'triggered_by',
     'started_at',
@@ -42,11 +43,16 @@ class ScrapeRun extends Model
     }
 
     /**
-     * @return BelongsTo<Wallet, $this>
+     * The scraper that produced this run — a `Wallet` or a `Merchant` (see
+     * the morph map registered in `AppServiceProvider`). Never anything
+     * else: a `Promotion`'s own `wallet_id` (where it displays) is separate
+     * and unaffected by which of the two produced the run.
+     *
+     * @return MorphTo<Model, $this>
      */
-    public function wallet(): BelongsTo
+    public function scrapeable(): MorphTo
     {
-        return $this->belongsTo(Wallet::class);
+        return $this->morphTo();
     }
 
     /**

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 
 #[Fillable(['name', 'slug', 'logo_url'])]
@@ -167,5 +168,17 @@ class Merchant extends Model
     public function promotions(): HasMany
     {
         return $this->hasMany(Promotion::class);
+    }
+
+    /**
+     * A merchant is only ever the scraper *source* for the supermarket
+     * pipeline (see `MerchantScraperInterface`) — the promotions it
+     * receives via a wallet's own scrape use `promotions()` above instead.
+     *
+     * @return MorphMany<ScrapeRun, $this>
+     */
+    public function scrapeRuns(): MorphMany
+    {
+        return $this->morphMany(ScrapeRun::class, 'scrapeable');
     }
 }

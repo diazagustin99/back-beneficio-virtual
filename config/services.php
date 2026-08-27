@@ -35,4 +35,25 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Browsershot (CarrefourDiscountScraper)
+    |--------------------------------------------------------------------------
+    |
+    | Puppeteer's own bundled-Chromium download only runs as an npm
+    | postinstall script, and this project disables those project-wide
+    | (see .npmrc's `ignore-scripts`) — so it never happens automatically.
+    | Point at a real Chrome/Chromium binary instead: leave unset locally
+    | to auto-detect the puppeteer-managed one Browsershot already knows
+    | how to find once `npx puppeteer browsers install chrome-headless-shell`
+    | has been run once, or set these explicitly for an environment with
+    | its own system Chromium (a deploy step, CI, ...).
+    |
+    */
+
+    'browsershot' => [
+        'node_binary' => env('BROWSERSHOT_NODE_BINARY'),
+        'chrome_path' => env('BROWSERSHOT_CHROME_PATH'),
+    ],
+
 ];
