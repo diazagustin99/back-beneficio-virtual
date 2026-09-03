@@ -58,12 +58,12 @@ class NaranjaXScraper implements WalletScraperInterface
     private const int MAX_PAGES = 220;
 
     /** Córdoba — roughly the geographic center of Argentina. */
-    private const string LATITUDE = '-31.4201';
+    private const string LATITUDE = '-34.61315';
 
-    private const string LONGITUDE = '-64.1888';
+    private const string LONGITUDE = '-58.37723';
 
     /** Comfortably covers the whole country (Jujuy to Ushuaia) from Córdoba. */
-    private const string RADIUS = '3000km';
+    private const string RADIUS = '1000km';
 
     /**
      * @var array<string, string>
@@ -81,8 +81,13 @@ class NaranjaXScraper implements WalletScraperInterface
      * @var array<int, string>
      */
     private const array WEEKDAY_NAMES = [
-        1 => 'Lunes', 2 => 'Martes', 3 => 'Miércoles', 4 => 'Jueves',
-        5 => 'Viernes', 6 => 'Sábado', 7 => 'Domingo',
+        1 => 'Lunes',
+        2 => 'Martes',
+        3 => 'Miércoles',
+        4 => 'Jueves',
+        5 => 'Viernes',
+        6 => 'Sábado',
+        7 => 'Domingo',
     ];
 
     public function walletSlug(): string
@@ -105,6 +110,14 @@ class NaranjaXScraper implements WalletScraperInterface
                                 'longitude' => self::LONGITUDE,
                                 'zoom' => self::RADIUS,
                             ],
+                            'paymentMethods' => [
+                                "DINERO",
+                                "DEBITO",
+                                "CREDITO",
+                                "VISA"
+                            ],
+                            'purchaseModes' => ["ONLINE", "IN_STORE"],
+                            'validOnWeekdays' => ["ALL_DAYS"],
                         ],
                         'pageOptions' => [
                             'page' => $page,
@@ -211,7 +224,7 @@ class NaranjaXScraper implements WalletScraperInterface
         }
 
         $days = array_map(
-            fn ($day) => self::WEEKDAY_NAMES[(int) $day] ?? null,
+            fn($day) => self::WEEKDAY_NAMES[(int) $day] ?? null,
             $weekdays,
         );
 
@@ -258,12 +271,12 @@ class NaranjaXScraper implements WalletScraperInterface
         }
 
         $labels = array_map(
-            fn ($method) => is_string($method)
+            fn($method) => is_string($method)
                 ? (self::PAYMENT_METHOD_LABELS[mb_strtolower($method)] ?? ucfirst($method))
                 : null,
             $methods,
         );
 
-        return array_values(array_filter($labels, fn ($label) => is_string($label) && $label !== ''));
+        return array_values(array_filter($labels, fn($label) => is_string($label) && $label !== ''));
     }
 }
