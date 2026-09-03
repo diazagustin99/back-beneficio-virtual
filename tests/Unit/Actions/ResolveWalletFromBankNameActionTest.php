@@ -105,12 +105,30 @@ class ResolveWalletFromBankNameActionTest extends TestCase
         $galicia = Wallet::factory()->create(['name' => 'Banco Galicia', 'slug' => 'galicia']);
         $bna = Wallet::factory()->create(['name' => 'Banco Nación', 'slug' => 'bna']);
         $santander = Wallet::factory()->create(['name' => 'Santander Río', 'slug' => 'santander']);
+        $cuentaDni = Wallet::factory()->create(['name' => 'Cuenta DNI', 'slug' => 'cuenta_dni']);
         $action = app(ResolveWalletFromBankNameAction::class);
 
         $this->assertSame($galicia->id, $action->handle('Banco Galicia')->id);
         $this->assertSame($galicia->id, $action->handle('Galicia Modo')->id);
         $this->assertSame($bna->id, $action->handle('Nacion')->id);
         $this->assertSame($santander->id, $action->handle('Santander')->id);
-        $this->assertSame(3, Wallet::count());
+        // La Anónima's own bank tile calls it "Banco DNI", but its own
+        // legal text says "Con cuenta DNI..." — same real product.
+        $this->assertSame($cuentaDni->id, $action->handle('Banco DNI')->id);
+        $this->assertSame(4, Wallet::count());
+    }
+
+    /**
+     * Regression for a real incident: La Anónima's own bank tile is
+     * literally labeled "Banco Mastercard" — its own legal text just says
+     * "Tarjetas de crédito Mastercard...", the card network, not a real
+     * bank of its own.
+     */
+    public function test_banco_mastercard_resolves_to_null_instead_of_creating_a_wallet(): void
+    {
+        $wallet = app(ResolveWalletFromBankNameAction::class)->handle('Banco Mastercard');
+
+        $this->assertNull($wallet);
+        $this->assertSame(0, Wallet::count());
     }
 }

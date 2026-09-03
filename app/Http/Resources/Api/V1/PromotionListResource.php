@@ -28,6 +28,7 @@ class PromotionListResource extends JsonResource
             'ends_at' => $this->ends_at?->toDateString(),
             'is_active' => $this->is_active,
             'url' => $this->url,
+            'payment_methods' => PromotionPaymentMethodResource::collection($this->whenLoaded('paymentMethods')),
         ];
     }
 }

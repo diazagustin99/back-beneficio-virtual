@@ -111,13 +111,13 @@ class NaranjaXScraper implements WalletScraperInterface
                                 'zoom' => self::RADIUS,
                             ],
                             'paymentMethods' => [
-                                "DINERO",
-                                "DEBITO",
-                                "CREDITO",
-                                "VISA"
+                                'DINERO',
+                                'DEBITO',
+                                'CREDITO',
+                                'VISA',
                             ],
-                            'purchaseModes' => ["ONLINE", "IN_STORE"],
-                            'validOnWeekdays' => ["ALL_DAYS"],
+                            'purchaseModes' => ['ONLINE', 'IN_STORE'],
+                            'validOnWeekdays' => ['ALL_DAYS'],
                         ],
                         'pageOptions' => [
                             'page' => $page,
@@ -224,7 +224,7 @@ class NaranjaXScraper implements WalletScraperInterface
         }
 
         $days = array_map(
-            fn($day) => self::WEEKDAY_NAMES[(int) $day] ?? null,
+            fn ($day) => self::WEEKDAY_NAMES[(int) $day] ?? null,
             $weekdays,
         );
 
@@ -271,12 +271,12 @@ class NaranjaXScraper implements WalletScraperInterface
         }
 
         $labels = array_map(
-            fn($method) => is_string($method)
+            fn ($method) => is_string($method)
                 ? (self::PAYMENT_METHOD_LABELS[mb_strtolower($method)] ?? ucfirst($method))
                 : null,
             $methods,
         );
 
-        return array_values(array_filter($labels, fn($label) => is_string($label) && $label !== ''));
+        return array_values(array_filter($labels, fn ($label) => is_string($label) && $label !== ''));
     }
 }

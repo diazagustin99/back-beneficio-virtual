@@ -28,9 +28,22 @@ class UpsertPromotionFromDtoAction
     public function handle(Wallet $wallet, PromotionDTO $dto, ScrapeRun $scrapeRun): array
     {
         return DB::transaction(function () use ($wallet, $dto, $scrapeRun) {
-            $merchantName = $this->isBannerText($dto->merchantName) ? $wallet->name : $dto->merchantName;
-            $merchant = $this->resolveMerchant->handle($merchantName, $dto->merchantIconUrl);
             $category = $this->resolveCategory->handle($dto->category);
+            $isGenericAdhered = $this->isGenericAdheredMerchantsText($dto->merchantName);
+
+            $merchantName = match (true) {
+                $this->isBannerText($dto->merchantName) => $wallet->name,
+                $isGenericAdhered => $category?->name ?? $wallet->name,
+                default => $dto->merchantName,
+            };
+
+            // A "Comercios de gastronomía adheridos"-style DTO's own icon
+            // (if any) belongs to whichever specific business the feed
+            // happened to attach it to that day — passing it through would
+            // make this category-wide merchant's logo flip-flop between
+            // unrelated photos as different generic promos get processed.
+            $merchantIconUrl = $isGenericAdhered ? null : $dto->merchantIconUrl;
+            $merchant = $this->resolveMerchant->handle($merchantName, $merchantIconUrl);
 
             $identityHash = $this->hasher->hash(
                 $wallet->slug,
@@ -152,5 +165,29 @@ class UpsertPromotionFromDtoAction
 
         return (str_starts_with($trimmed, '¡') && str_ends_with($trimmed, '!'))
             || (str_starts_with($trimmed, '¿') && str_ends_with($trimmed, '?'));
+    }
+
+    /**
+     * Both Macro's and MODO's own feeds occasionally name a promotion "any
+     * adhered business in this category" instead of one specific merchant
+     * — "Comercios de gastronomía adheridos", "Consultá los locales
+     * adheridos", "Comercios que acepten MODO" — confirmed live on both,
+     * same wording. Verified against every real merchant name either
+     * wallet has actually produced: no real business name starts with
+     * "Comercios" or contains "adherid[oa]" — see
+     * plans/0023-macro-comercios-genericos.md for the full evidence (e.g.
+     * "Tienda Newsan"/"Tienda Galicia" are real merchants and neither
+     * matches).
+     */
+    private function isGenericAdheredMerchantsText(string $name): bool
+    {
+        $trimmed = trim($name);
+
+        if ($trimmed === '') {
+            return false;
+        }
+
+        return preg_match('/^comercios\b/iu', $trimmed) === 1
+            || preg_match('/adherid/iu', $trimmed) === 1;
     }
 }

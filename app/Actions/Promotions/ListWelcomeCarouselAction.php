@@ -42,7 +42,7 @@ class ListWelcomeCarouselAction
 
         return Promotion::query()
             ->whereIn('id', $bestPromotionIds)
-            ->with(['wallet', 'merchant', 'category'])
+            ->with(['wallet', 'merchant', 'category', 'paymentMethods'])
             ->get();
     }
 }

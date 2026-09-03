@@ -6,6 +6,7 @@ use App\Actions\Scraping\ResolveWalletFromBankNameAction;
 use App\Contracts\Scrapers\MerchantScraperInterface;
 use App\DTOs\PromotionDTO;
 use App\Scrapers\Concerns\ConvertsIsoWeekDays;
+use App\Scrapers\Concerns\DetectsModoPaymentChannel;
 use App\Scrapers\Concerns\MakesHttpRequests;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Carbon;
@@ -30,6 +31,7 @@ use Illuminate\Support\Carbon;
 class ChangoMasDiscountScraper implements MerchantScraperInterface
 {
     use ConvertsIsoWeekDays;
+    use DetectsModoPaymentChannel;
     use MakesHttpRequests;
 
     private const string GRAPHQL_URL = 'https://www.masonline.com.ar/_v/public/graphql/v1';
@@ -202,6 +204,7 @@ class ChangoMasDiscountScraper implements MerchantScraperInterface
             terms: $this->nullableField($promo, 'legal'),
             url: self::SOURCE_URL,
             externalId: sha1('changomas|'.($promo['id'] ?? $title)),
+            paymentMethods: $this->addModoChannelIfMentioned($bankLabel, $wallet->slug),
             rawPayload: $promo,
         );
     }

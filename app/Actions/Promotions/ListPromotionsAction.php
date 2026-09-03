@@ -15,7 +15,7 @@ class ListPromotionsAction
     public function handle(array $filters = []): LengthAwarePaginator
     {
         return Promotion::query()
-            ->with(['wallet', 'merchant', 'category'])
+            ->with(['wallet', 'merchant', 'category', 'paymentMethods'])
             ->when(filled($filters['wallet'] ?? null), fn ($query) => $query->forWallets($filters['wallet']))
             ->when(filled($filters['merchant_id'] ?? null), fn ($query) => $query->whereIn('merchant_id', $filters['merchant_id']))
             ->when(filled($filters['promotion_category_id'] ?? null), fn ($query) => $query->whereIn('promotion_category_id', $filters['promotion_category_id']))

@@ -97,4 +97,32 @@ return [
     // la misma estación de servicio, no un comercio distinto.
     'axion' => 'Axion Energy',
 
+    // Macro's own "AHORA X" feed (programas Ahora 12-style) reparte el
+    // mismo programa en varios comercios casi idénticos, según provincia o
+    // monto — ver plans/0023-macro-comercios-genericos.md. Ojo: "Ahora
+    // Misiones" es un programa propio, no un sufijo de otro (por eso NO
+    // se pela la palabra "Misiones" de "Ahora Viaja por Misiones" ni de
+    // "Ahora Misiones" sola — solo de los casos donde es claramente un
+    // calificador de provincia sobre otro programa base).
+    'ahoraconstruccionmnes' => 'Ahora Construcción',
+    'ahoraconstruccionnomne' => 'Ahora Construcción',
+    'ahoraconstruccionmisiones' => 'Ahora Construcción',
+    'ahoraconstruccion' => 'Ahora Construcción',
+    'ahoradurablesmisiones' => 'Ahora Durables',
+    'ahoradurablesnomisione' => 'Ahora Durables',
+    'ahoradurables' => 'Ahora Durables',
+    'ahoraneumaticosmnes' => 'Ahora Neumáticos',
+    'ahoraneumaticosnomnes' => 'Ahora Neumáticos',
+    'ahoraneumaticos' => 'Ahora Neumáticos',
+    // "25" es el % de descuento, no una variante distinta del programa.
+    'ahoramascotas25' => 'Ahora Mascotas',
+    'ahoramascotas' => 'Ahora Mascotas',
+    // "15"/"20" también son el % de descuento.
+    'ahoramisiones15' => 'Ahora Misiones',
+    'ahoramisiones20' => 'Ahora Misiones',
+    'ahoramisiones' => 'Ahora Misiones',
+    'ahoramujercredito25' => 'Ahora Mujer',
+    'ahoramujerdebito25' => 'Ahora Mujer',
+    'ahoramujer' => 'Ahora Mujer',
+
 ];

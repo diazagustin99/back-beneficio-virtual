@@ -6,6 +6,7 @@ use App\Actions\Scraping\ResolveWalletFromBankNameAction;
 use App\Contracts\Scrapers\MerchantScraperInterface;
 use App\DTOs\PromotionDTO;
 use App\Scrapers\Concerns\ConvertsIsoWeekDays;
+use App\Scrapers\Concerns\DetectsModoPaymentChannel;
 use App\Scrapers\Concerns\MakesHttpRequests;
 use DOMDocument;
 use DOMElement;
@@ -30,6 +31,7 @@ use DOMXPath;
 class LaAnonimaDiscountScraper implements MerchantScraperInterface
 {
     use ConvertsIsoWeekDays;
+    use DetectsModoPaymentChannel;
     use MakesHttpRequests;
 
     private const string SOURCE_URL = 'https://www.laanonima.com.ar/empresa/promociones-y-descuentos';
@@ -180,6 +182,13 @@ class LaAnonimaDiscountScraper implements MerchantScraperInterface
                 terms: $legalText,
                 url: self::SOURCE_URL.'#banco',
                 externalId: sha1(implode('|', ['la-anonima', $id, $title, $legalText ?? ''])),
+                // Unlike ChangoMás, La Anónima never puts "MODO" in the bank
+                // label itself (its own bank tile for this stays a bare
+                // "Banco Hipotecario") — a "vía MODO" promo instead lists
+                // *both* the specific bank's id and MODO's own tile id
+                // ("Banco MODO") on the same card, and only the card's own
+                // title spells it out ("... con Banco Hipotecario MODO").
+                paymentMethods: $this->addModoChannelIfMentioned($title, $wallet->slug),
                 rawPayload: [
                     'bank_id' => $id,
                     'bank_name' => $banks[$id],

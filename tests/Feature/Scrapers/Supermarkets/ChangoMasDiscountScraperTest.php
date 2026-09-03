@@ -47,6 +47,8 @@ class ChangoMasDiscountScraperTest extends TestCase
         $this->assertSame(['Martes'], $galicia->validDays);
         $this->assertSame('Tope $10.000 por semana', $galicia->description);
         $this->assertSame(sha1('changomas|promo-galicia'), $galicia->externalId);
+        // Its raw bank label never mentions MODO — no payment channel to add.
+        $this->assertSame([], $galicia->paymentMethods);
 
         // "de reintegro" is a cashback, not an immediate discount — same
         // distinction MercadoPagoScraper already makes from its own badges.
@@ -56,6 +58,8 @@ class ChangoMasDiscountScraperTest extends TestCase
         $this->assertSame(20.0, $modo->cashbackPercentage);
         $this->assertSame('Desde MODO o APP de bancos adheridos', $modo->title);
         $this->assertSame(['Lunes'], $modo->validDays);
+        // Already the modo wallet itself — "vía MODO" would be redundant.
+        $this->assertSame([], $modo->paymentMethods);
 
         // "Banco Credicoop MODO" resolves through the alias to the real
         // bank, and all 7 days explicitly true collapses to the sentinel.
@@ -64,6 +68,10 @@ class ChangoMasDiscountScraperTest extends TestCase
         $this->assertSame(12, $credicoop->installments);
         $this->assertSame('12 cuotas sin interés Banco Credicoop', $credicoop->title);
         $this->assertSame(['Todos los días'], $credicoop->validDays);
+        // Resolved to Banco Credicoop's own wallet, but the raw label
+        // ("Banco Credicoop MODO") says it's only via the MODO app —
+        // see plans/0022-wallet-via-modo.md.
+        $this->assertSame(['MODO'], $credicoop->paymentMethods);
 
         $this->assertSame(3, Wallet::count());
         $this->assertTrue(Wallet::where('name', 'Banco Credicoop')->exists());

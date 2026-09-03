@@ -28,8 +28,10 @@ class LaAnonimaDiscountScraperTest extends TestCase
 
         // The first card names 2 banks -> 2 DTOs; the "Tarjeta única"
         // card's only bank is a generic catch-all (see
-        // config/bank_wallet_aliases.php's `skip` list) -> dropped.
-        $this->assertCount(3, $promotions);
+        // config/bank_wallet_aliases.php's `skip` list) -> dropped; the
+        // last card names 2 banks (Banco MODO + Banco Hipotecario) -> 2
+        // more DTOs.
+        $this->assertCount(5, $promotions);
 
         $galicia = $promotions[0];
         $this->assertSame('banco-galicia', $galicia->walletSlug);
@@ -38,11 +40,14 @@ class LaAnonimaDiscountScraperTest extends TestCase
         $this->assertSame(['Martes'], $galicia->validDays);
         $this->assertSame('Todos los martes, 25% de descuento pagando con tarjeta de débito.', $galicia->terms);
         $this->assertSame('https://www.laanonima.com.ar/empresa/promociones-y-descuentos#banco', $galicia->url);
+        // Neither this card's bank labels nor its title mention MODO.
+        $this->assertSame([], $galicia->paymentMethods);
 
         $hipotecario = $promotions[1];
         $this->assertSame('banco-hipotecario', $hipotecario->walletSlug);
         $this->assertSame($galicia->title, $hipotecario->title);
         $this->assertNotSame($galicia->externalId, $hipotecario->externalId);
+        $this->assertSame([], $hipotecario->paymentMethods);
 
         $sol = $promotions[2];
         $this->assertSame('banco-del-sol', $sol->walletSlug);
@@ -50,9 +55,24 @@ class LaAnonimaDiscountScraperTest extends TestCase
         $this->assertSame(12, $sol->installments);
         $this->assertSame(['Todos los días'], $sol->validDays);
 
-        $this->assertSame(3, Wallet::count());
+        // "Banco MODO" (its own bank tile) + "Banco Hipotecario" on the
+        // same card, title "... con Banco Hipotecario MODO" — La Anónima's
+        // own way of saying this Hipotecario promo is only via the MODO
+        // app (its bank tile never carries the "MODO" suffix itself,
+        // unlike ChangoMás — see plans/0022-wallet-via-modo.md).
+        $modo = $promotions[3];
+        $this->assertSame('modo', $modo->walletSlug);
+        // Already the modo wallet itself — "vía MODO" would be redundant.
+        $this->assertSame([], $modo->paymentMethods);
+
+        $hipotecarioViaModo = $promotions[4];
+        $this->assertSame('banco-hipotecario', $hipotecarioViaModo->walletSlug);
+        $this->assertSame(['MODO'], $hipotecarioViaModo->paymentMethods);
+
+        $this->assertSame(4, Wallet::count());
         $this->assertTrue(Wallet::where('name', 'Banco Hipotecario')->exists());
         $this->assertTrue(Wallet::where('name', 'Banco Del Sol')->exists());
+        $this->assertTrue(Wallet::where('name', 'MODO')->exists());
         $this->assertFalse(Wallet::where('normalized_name', 'tarjetaunica')->exists());
     }
 

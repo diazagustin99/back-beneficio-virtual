@@ -120,6 +120,23 @@ class PromotionControllerTest extends TestCase
             ->assertJsonCount(1, 'data');
     }
 
+    /**
+     * Regression: the list endpoint (feed, comercio detail) used to omit
+     * `payment_methods` entirely — only the single-promotion detail
+     * endpoint carried it — which meant a "YOY vía MODO" promotion never
+     * had that info available anywhere the wallet badge itself renders.
+     * See plans/0022-wallet-via-modo.md.
+     */
+    public function test_index_returns_payment_methods_too(): void
+    {
+        $promotion = Promotion::factory()->create();
+        PromotionPaymentMethod::factory()->for($promotion)->create(['name' => 'MODO']);
+
+        $this->getJson('/api/v1/promotions')
+            ->assertOk()
+            ->assertJsonPath('data.0.payment_methods.0.name', 'MODO');
+    }
+
     public function test_show_returns_nested_locations_and_payment_methods(): void
     {
         $promotion = Promotion::factory()->create();

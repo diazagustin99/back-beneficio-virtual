@@ -101,6 +101,12 @@ return [
         'bancoicbc' => 'ICBC',
         'bancomodo' => 'MODO',
         'bancosanjuanmodo' => 'Banco San Juan',
+
+        // La Anónima's own bank tile is labeled "Banco DNI", but its own
+        // legal text says "Con cuenta DNI..." — the same real product as
+        // the existing "Cuenta DNI" wallet, just filed under a different
+        // name on this site.
+        'bancodni' => 'Cuenta DNI',
     ],
 
     /*
@@ -163,6 +169,11 @@ return [
         'tarjetasucredito',
         'tarjetatitanio',
         'tarjetaunica',
+
+        // La Anónima's own bank tile is literally named "Banco Mastercard"
+        // — confirmed live, its own legal text just says "Tarjetas de
+        // crédito Mastercard...", the card network, not a bank of its own.
+        'bancomastercard',
     ],
 
 ];
