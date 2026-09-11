@@ -65,10 +65,23 @@ class SyncPromotionsFromScraperAction
             }
         }
 
-        $deactivated = $this->deactivateAcrossTargetWallets($source, $seenPromotionIdsByWalletId);
+        $status = $this->resolveStatus($counts);
+
+        // A run that didn't fully succeed can't be trusted to say "this
+        // promotion is gone" just because it wasn't in *this* run's own
+        // seen list — that starves the "not seen" comparison of a
+        // complete picture and would wrongly deactivate promotions that
+        // are still genuinely active, only missed because of the run's
+        // own failure (see plans/0024-desactivacion-en-scrapes-incompletos.md).
+        // DeactivateExpiredPromotionsAction (its own daily schedule) still
+        // catches anything truly past its end date regardless of whether
+        // any scrape ran today.
+        $deactivated = $status === ScrapeRunStatus::Success
+            ? $this->deactivateAcrossTargetWallets($source, $seenPromotionIdsByWalletId)
+            : 0;
 
         $scrapeRun->update([
-            'status' => $this->resolveStatus($counts),
+            'status' => $status,
             'finished_at' => now(),
             'promotions_total' => $counts['total'],
             'promotions_created' => $counts['created'],
@@ -154,12 +167,19 @@ class SyncPromotionsFromScraperAction
     }
 
     /**
+     * A run that saw nothing at all (a dead site, a broken selector) isn't
+     * "successful" just because nothing individually threw — treated the
+     * same as every DTO failing, so it never gets to look at an empty seen
+     * list and wrongly conclude every one of this wallet's promotions is
+     * gone (see plans/0024-desactivacion-en-scrapes-incompletos.md).
+     *
      * @param  array{total: int, failed: int}  $counts
      */
     private function resolveStatus(array $counts): ScrapeRunStatus
     {
         return match (true) {
-            $counts['total'] > 0 && $counts['failed'] === $counts['total'] => ScrapeRunStatus::Failed,
+            $counts['total'] === 0 => ScrapeRunStatus::Failed,
+            $counts['failed'] === $counts['total'] => ScrapeRunStatus::Failed,
             $counts['failed'] > 0 => ScrapeRunStatus::Partial,
             default => ScrapeRunStatus::Success,
         };

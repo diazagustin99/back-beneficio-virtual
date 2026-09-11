@@ -3,10 +3,15 @@
 namespace App\Actions\Scraping;
 
 use App\Models\PromotionCategory;
+use App\Services\Scraping\CategoryWordMatcher;
 use Illuminate\Support\Str;
 
 class ResolvePromotionCategoryAction
 {
+    public function __construct(
+        private readonly CategoryWordMatcher $wordMatcher,
+    ) {}
+
     /**
      * @var string[]
      */
@@ -25,8 +30,33 @@ class ResolvePromotionCategoryAction
         // category's real name (e.g. "Transporte") instead of creating a
         // near-duplicate — see config/category_aliases.php.
         $canonicalName = config("category_aliases.{$slug}");
-        $name = $canonicalName ?? $this->normalizeShoutingName($trimmed);
-        $slug = $canonicalName !== null ? Str::slug($canonicalName) : $slug;
+
+        if ($canonicalName !== null) {
+            $canonicalSlug = Str::slug($canonicalName);
+
+            return PromotionCategory::createOrFirst(
+                ['slug' => $canonicalSlug],
+                ['name' => $canonicalName, 'slug' => $canonicalSlug],
+            );
+        }
+
+        $existing = PromotionCategory::where('slug', $slug)->first();
+
+        if ($existing !== null) {
+            return $existing;
+        }
+
+        // Last resort before creating a brand-new category: does an
+        // existing one already, unambiguously, cover this word — e.g.
+        // "Autos" already covered by "Autos y motos"? See
+        // CategoryWordMatcher and plans/0025-categorias-duplicadas.md.
+        $matched = $this->wordMatcher->findSingleMatch($trimmed);
+
+        if ($matched !== null) {
+            return $matched;
+        }
+
+        $name = $this->normalizeShoutingName($trimmed);
 
         return PromotionCategory::createOrFirst(['slug' => $slug], ['name' => $name, 'slug' => $slug]);
     }

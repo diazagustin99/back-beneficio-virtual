@@ -34,7 +34,7 @@ return [
     'electrodomesticos-y-tecnologia' => 'Electro y Tecnología',
     'farmacias-y-salud' => 'Farmacias, Perfumerías y Peluquerías',
     'hogar-y-decoracion' => 'Hogar y deco',
-    'indumentaria' => 'Indumentaria y Accesorios',
+    'indumentaria' => 'Moda y accesorios',
     'jugueterias' => 'Juguetería',
     'mascotas-y-veterinarias' => 'Mascotas',
     'otro' => 'Otros',
@@ -67,5 +67,47 @@ return [
     // Confirmado con una promoción real de Santander: "Novecento Cañitas"
     // (restaurante) categorizado como "Dining" — es Gastronomía, en inglés.
     'dining' => 'Gastronomía',
+
+    // Lote verificado con una muestra real de comercio+promoción de cada
+    // una (plans/0025-categorias-duplicadas.md) — nunca por parecido de
+    // nombre solo.
+    'automotor-y-combustible' => 'Autos y motos',
+    'vehiculos' => 'Autos y motos',
+    // Pirelli/Ducati (motos), no bicicletas — a pesar del nombre.
+    'rodados' => 'Autos y motos',
+    'construccion-y-hogar' => 'Construcción',
+    'ferreteria-y-pinturerias' => 'Construcción',
+    'pinturerias' => 'Construcción',
+    'bares' => 'Gastronomía',
+    'confiteria' => 'Gastronomía',
+    'fast-food' => 'Gastronomía',
+    'restaurantes' => 'Gastronomía',
+    'electro' => 'Electro y Tecnología',
+    'electronica' => 'Electro y Tecnología',
+    'tecnologia' => 'Electro y Tecnología',
+    'farmacias' => 'Farmacias, Perfumerías y Peluquerías',
+    'perfumerias' => 'Farmacias, Perfumerías y Peluquerías',
+    'cuidado-personal' => 'Farmacias, Perfumerías y Peluquerías',
+    // CityKids y "Compañía de Juguetes" aparecen tanto en "Juguetería"
+    // como en "Niños" — mismos comercios, mismo rubro.
+    'juguetes' => 'Juguetería',
+    'ninos' => 'Juguetería',
+    'infantiles' => 'Juguetería',
+    'dia-del-nino' => 'Juguetería',
+    // Una promoción real dice literalmente "Supers de Santa Fe".
+    'mercados' => 'Supermercados',
+    'espectaculos' => 'Entretenimiento',
+    'vinos-y-bodegas' => 'Bodegas',
+    'varios' => 'Otros',
+    'estaciones-de-servicios' => 'Combustible',
+    // "Moda"/"Indumentaria" son sinónimos en español, "Accesorios" es
+    // idéntico en las dos — el grupo de mayor impacto (~4700 promos
+    // sumadas). "Indumentaria y Accesorios" queda como variante, no
+    // canónica: "Moda y accesorios" ya tenía casi el doble de promos.
+    'indumentaria-y-accesorios' => 'Moda y accesorios',
+    // El mismo rubro partido por provincia — igual patrón que las "AHORA
+    // X" de Macro (plan 0023). "Carnicerías" es nueva, no existía.
+    'carnicerias-mendoza' => 'Carnicerías',
+    'carnicerias-san-luis' => 'Carnicerías',
 
 ];

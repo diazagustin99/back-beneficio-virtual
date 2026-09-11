@@ -182,18 +182,88 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $sync = app(SyncPromotionsFromScraperAction::class);
 
         $run1 = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
-        $sync->handle($wallet, $run1, [$this->dto($wallet)]);
+        $sync->handle($wallet, $run1, [$this->dto($wallet, ['externalId' => 'disappears'])]);
+        $disappearing = Promotion::where('external_id', 'disappears')->sole();
+
+        // A real, successful run that simply no longer includes this
+        // promotion — not an empty/failed run, which shouldn't deactivate
+        // anything (see plans/0024-desactivacion-en-scrapes-incompletos.md).
+        $run2 = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
+        $sync->handle($wallet, $run2, [$this->dto($wallet, ['externalId' => 'still-here'])]);
+
+        $disappearing->refresh();
+        $this->assertModelExists($disappearing);
+        $this->assertFalse($disappearing->is_active);
+        $this->assertNotNull($disappearing->deactivated_at);
+
+        $run2->refresh();
+        $this->assertSame(1, $run2->promotions_deactivated);
+    }
+
+    /**
+     * Regression: a run that saw nothing at all (empty iterable — a dead
+     * site, a broken selector) used to be counted as `Success` (nothing
+     * individually failed) and would deactivate every one of this
+     * wallet's active promotions. See
+     * plans/0024-desactivacion-en-scrapes-incompletos.md.
+     */
+    public function test_an_empty_run_is_marked_failed_and_deactivates_nothing(): void
+    {
+        $wallet = Wallet::factory()->create();
+        $sync = app(SyncPromotionsFromScraperAction::class);
+
+        $sync->handle($wallet, ScrapeRun::factory()->for($wallet, 'scrapeable')->create(), [$this->dto($wallet)]);
+        $promotion = Promotion::sole();
 
         $run2 = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
         $sync->handle($wallet, $run2, []);
 
+        $run2->refresh();
+        $this->assertSame(ScrapeRunStatus::Failed, $run2->status);
+        $this->assertSame(0, $run2->promotions_deactivated);
+        $this->assertTrue($promotion->fresh()->is_active);
+    }
+
+    /**
+     * Regression: a `Partial` run (some DTOs failed, but the run itself
+     * completed) used to deactivate every promotion it didn't manage to
+     * re-confirm — indistinguishable from "the merchant removed it". See
+     * plans/0024-desactivacion-en-scrapes-incompletos.md.
+     */
+    public function test_a_partial_run_does_not_deactivate_promotions_it_failed_to_process(): void
+    {
+        $wallet = Wallet::factory()->create();
+        $sync = app(SyncPromotionsFromScraperAction::class);
+
+        $sync->handle($wallet, ScrapeRun::factory()->for($wallet, 'scrapeable')->create(), [
+            $this->dto($wallet, ['externalId' => 'not-reprocessed-today']),
+        ]);
         $promotion = Promotion::sole();
-        $this->assertModelExists($promotion);
-        $this->assertFalse($promotion->is_active);
-        $this->assertNotNull($promotion->deactivated_at);
+
+        $mock = Mockery::mock(UpsertPromotionFromDtoAction::class);
+        $mock->shouldReceive('handle')
+            ->andReturnUsing(function (Wallet $wallet, PromotionDTO $dto) {
+                if ($dto->title === 'boom') {
+                    throw new RuntimeException('boom');
+                }
+
+                return [
+                    'promotion' => Promotion::factory()->for($wallet)->create(),
+                    'status' => 'created',
+                ];
+            });
+        $this->app->instance(UpsertPromotionFromDtoAction::class, $mock);
+
+        $run2 = ScrapeRun::factory()->for($wallet, 'scrapeable')->create();
+        app(SyncPromotionsFromScraperAction::class)->handle($wallet, $run2, [
+            $this->dto($wallet, ['title' => 'ok', 'externalId' => 'processed-fine']),
+            $this->dto($wallet, ['title' => 'boom', 'externalId' => 'fails-to-process']),
+        ]);
 
         $run2->refresh();
-        $this->assertSame(1, $run2->promotions_deactivated);
+        $this->assertSame(ScrapeRunStatus::Partial, $run2->status);
+        $this->assertSame(0, $run2->promotions_deactivated);
+        $this->assertTrue($promotion->fresh()->is_active);
     }
 
     public function test_reappearing_promotion_without_changes_is_reactivated_without_version_bump(): void
@@ -254,9 +324,13 @@ class SyncPromotionsFromScraperActionTest extends TestCase
 
         $this->assertSame(2, Promotion::count());
 
-        $sync->handle($walletA, ScrapeRun::factory()->for($walletA, 'scrapeable')->create(), []);
+        // A real, successful run for A that no longer includes this promo —
+        // not an empty/failed one, which shouldn't deactivate anything.
+        $sync->handle($walletA, ScrapeRun::factory()->for($walletA, 'scrapeable')->create(), [
+            $this->dto($walletA, ['externalId' => 'ext-2']),
+        ]);
 
-        $promoA = Promotion::where('wallet_id', $walletA->id)->sole();
+        $promoA = Promotion::where('wallet_id', $walletA->id)->where('external_id', 'ext-1')->sole();
         $promoB = Promotion::where('wallet_id', $walletB->id)->sole();
 
         $this->assertFalse($promoA->is_active);
@@ -370,9 +444,13 @@ class SyncPromotionsFromScraperActionTest extends TestCase
         $this->assertSame(2, Promotion::where('wallet_id', $macro->id)->count());
         $this->assertTrue($macroNative->fresh()->is_active);
 
-        // A later MODO run with no bank-exclusive promo left for Macro must
-        // deactivate only the one it itself attributed, not Macro's own.
-        $sync->handle($modo, ScrapeRun::factory()->for($modo, 'scrapeable')->create(), []);
+        // A later, successful MODO run with no bank-exclusive promo left
+        // for Macro must deactivate only the one it itself attributed, not
+        // Macro's own — not an empty/failed run, which shouldn't
+        // deactivate anything.
+        $sync->handle($modo, ScrapeRun::factory()->for($modo, 'scrapeable')->create(), [
+            $this->dto($modo, ['title' => 'MODO native promo', 'externalId' => 'modo-native-1']),
+        ]);
 
         $this->assertTrue($macroNative->fresh()->is_active);
         $modoAttributed = Promotion::where('wallet_id', $macro->id)->where('external_id', 'modo-ext-1')->sole();
