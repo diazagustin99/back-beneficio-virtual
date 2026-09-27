@@ -55,6 +55,13 @@ Schedule::command('promotions:deactivate-expired')
     ->onOneServer()
     ->runInBackground();
 
+Schedule::command('scrape-runs:purge')
+    ->dailyAt('13:00')
+    ->timezone('America/Argentina/Buenos_Aires')
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->runInBackground();
+
 Schedule::command('notifications:daily-merchant-discounts')
     ->dailyAt('08:00')
     ->timezone('America/Argentina/Buenos_Aires')

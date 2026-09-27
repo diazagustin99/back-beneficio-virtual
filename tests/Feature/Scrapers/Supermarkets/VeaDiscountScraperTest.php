@@ -5,6 +5,7 @@ namespace Tests\Feature\Scrapers\Supermarkets;
 use App\Models\Wallet;
 use App\Scrapers\Supermarkets\VeaDiscountScraper;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -14,6 +15,15 @@ class VeaDiscountScraperTest extends TestCase
 
     public function test_parses_active_own_store_promotions_and_resolves_bank_wallets(): void
     {
+        // The fixture's own dates are fixed Unix timestamps, not relative to
+        // whenever the test happens to run — its "active" entries end
+        // 2026-09-26 and its deliberately-expired one ends 2025-10-31 (see
+        // CencosudBankDiscountScraper::isExpired()). Freezing "now" squarely
+        // between those two keeps the test's expired/active split correct
+        // forever, instead of both drifting into "expired" once real time
+        // passes 2026-09-26.
+        $this->travelTo(Carbon::parse('2026-08-15'));
+
         Http::preventStrayRequests();
         Http::fake([
             'www.vea.com.ar/api/dataentities/JN/documents/bankDiscount*' => Http::response(
