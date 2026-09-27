@@ -57,4 +57,13 @@ class ScrapeRunFactory extends Factory
             'error_message' => $this->faker->sentence(),
         ]);
     }
+
+    public function partial(): static
+    {
+        return $this->state(fn () => [
+            'status' => ScrapeRunStatus::Partial,
+            'started_at' => now()->subMinute(),
+            'finished_at' => now(),
+        ]);
+    }
 }

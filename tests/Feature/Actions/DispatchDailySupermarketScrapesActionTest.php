@@ -100,6 +100,59 @@ class DispatchDailySupermarketScrapesActionTest extends TestCase
         $this->assertTrue($dispatched);
         Queue::assertPushed(ScrapeMerchantJob::class, 1);
     }
+
+    /**
+     * See plans/0026-scraping-cada-5-dias.md: same cooldown rule as wallets,
+     * applied to the supermarket pipeline.
+     */
+    public function test_skips_a_supermarket_whose_successful_scrape_is_still_within_its_cooldown(): void
+    {
+        Queue::fake();
+        config(['merchant_scrapers.merchants' => [
+            'carrefour' => AlwaysCarrefourScraperStub::class,
+        ]]);
+        $carrefour = Merchant::factory()->create(['name' => 'Carrefour', 'slug' => 'carrefour']);
+        ScrapeRun::factory()->for($carrefour, 'scrapeable')->success()->create(['finished_at' => now()->subDays(2)]);
+
+        $dispatched = app(DispatchDailySupermarketScrapesAction::class)->handle();
+
+        $this->assertFalse($dispatched);
+        Queue::assertNotPushed(ScrapeMerchantJob::class);
+    }
+
+    public function test_dispatches_a_supermarket_whose_successful_scrape_cooldown_has_elapsed(): void
+    {
+        Queue::fake();
+        config(['merchant_scrapers.merchants' => [
+            'carrefour' => AlwaysCarrefourScraperStub::class,
+        ]]);
+        $carrefour = Merchant::factory()->create(['name' => 'Carrefour', 'slug' => 'carrefour']);
+        ScrapeRun::factory()->for($carrefour, 'scrapeable')->success()->create(['finished_at' => now()->subDays(5)]);
+
+        $dispatched = app(DispatchDailySupermarketScrapesAction::class)->handle();
+
+        $this->assertTrue($dispatched);
+        Queue::assertPushed(ScrapeMerchantJob::class, 1);
+    }
+
+    /**
+     * A `Partial` run is treated like a failure for scheduling purposes —
+     * retries the next day instead of waiting the full 5-day cooldown.
+     */
+    public function test_dispatches_a_supermarket_whose_last_scrape_was_partial_yesterday(): void
+    {
+        Queue::fake();
+        config(['merchant_scrapers.merchants' => [
+            'carrefour' => AlwaysCarrefourScraperStub::class,
+        ]]);
+        $carrefour = Merchant::factory()->create(['name' => 'Carrefour', 'slug' => 'carrefour']);
+        ScrapeRun::factory()->for($carrefour, 'scrapeable')->partial()->create(['finished_at' => now()->subDay()]);
+
+        $dispatched = app(DispatchDailySupermarketScrapesAction::class)->handle();
+
+        $this->assertTrue($dispatched);
+        Queue::assertPushed(ScrapeMerchantJob::class, 1);
+    }
 }
 
 class AlwaysCarrefourScraperStub implements MerchantScraperInterface

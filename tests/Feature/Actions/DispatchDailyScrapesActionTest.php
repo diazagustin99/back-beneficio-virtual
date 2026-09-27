@@ -79,4 +79,76 @@ class DispatchDailyScrapesActionTest extends TestCase
 
         $this->assertSame('manual', ScrapeRun::sole()->triggered_by);
     }
+
+    /**
+     * See plans/0026-scraping-cada-5-dias.md: a wallet whose last scrape
+     * already succeeded recently doesn't need to be scraped again today.
+     */
+    public function test_skips_a_wallet_whose_successful_scrape_is_still_within_its_cooldown(): void
+    {
+        Queue::fake();
+
+        $wallet = Wallet::factory()->create(['slug' => 'mercado_pago']);
+        ScrapeRun::factory()->for($wallet, 'scrapeable')->success()->create(['finished_at' => now()->subDays(2)]);
+
+        app(DispatchDailyScrapesAction::class)->handle();
+
+        Queue::assertNotPushed(ScrapeWalletJob::class);
+    }
+
+    public function test_dispatches_a_wallet_whose_successful_scrape_cooldown_has_elapsed(): void
+    {
+        Queue::fake();
+
+        $wallet = Wallet::factory()->create(['slug' => 'mercado_pago']);
+        ScrapeRun::factory()->for($wallet, 'scrapeable')->success()->create(['finished_at' => now()->subDays(5)]);
+
+        app(DispatchDailyScrapesAction::class)->handle();
+
+        Queue::assertPushed(ScrapeWalletJob::class, 1);
+    }
+
+    /**
+     * A `Failed` (or `Partial`) run retries the next day instead of waiting
+     * out the full 5-day cooldown a clean run gets.
+     */
+    public function test_dispatches_a_wallet_whose_last_scrape_failed_yesterday(): void
+    {
+        Queue::fake();
+
+        $wallet = Wallet::factory()->create(['slug' => 'mercado_pago']);
+        ScrapeRun::factory()->for($wallet, 'scrapeable')->failed()->create(['finished_at' => now()->subDay()]);
+
+        app(DispatchDailyScrapesAction::class)->handle();
+
+        Queue::assertPushed(ScrapeWalletJob::class, 1);
+    }
+
+    public function test_skips_a_wallet_whose_last_scrape_failed_earlier_today(): void
+    {
+        Queue::fake();
+
+        $wallet = Wallet::factory()->create(['slug' => 'mercado_pago']);
+        ScrapeRun::factory()->for($wallet, 'scrapeable')->failed()->create(['finished_at' => now()->subHours(3)]);
+
+        app(DispatchDailyScrapesAction::class)->handle();
+
+        Queue::assertNotPushed(ScrapeWalletJob::class);
+    }
+
+    /**
+     * An explicit --wallet request is someone asking for that wallet right
+     * now — it always bypasses the cooldown, unlike the broad daily sweep.
+     */
+    public function test_a_manual_wallet_request_bypasses_the_cooldown(): void
+    {
+        Queue::fake();
+
+        $wallet = Wallet::factory()->create(['slug' => 'mercado_pago']);
+        ScrapeRun::factory()->for($wallet, 'scrapeable')->success()->create(['finished_at' => now()->subDay()]);
+
+        app(DispatchDailyScrapesAction::class)->handle(walletSlugs: ['mercado_pago']);
+
+        Queue::assertPushed(ScrapeWalletJob::class, 1);
+    }
 }

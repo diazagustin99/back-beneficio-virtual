@@ -8,7 +8,7 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
 #[Signature('promotions:scrape {--wallet=* : Restrict the run to these wallet slugs}')]
-#[Description('Dispatch a scrape job for each active wallet (or the given --wallet slugs).')]
+#[Description('Dispatch a scrape job for each active wallet due for one (or the given --wallet slugs, which always bypass the cooldown).')]
 class ScrapePromotionsCommand extends Command
 {
     /**
@@ -25,7 +25,7 @@ class ScrapePromotionsCommand extends Command
 
         $this->info($wallets !== []
             ? 'Scrape dispatched for: '.implode(', ', $wallets)
-            : 'Scrape dispatched for all active wallets.');
+            : 'Scrape dispatched for every active wallet due for one.');
 
         return self::SUCCESS;
     }
