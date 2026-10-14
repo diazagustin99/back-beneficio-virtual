@@ -15,7 +15,7 @@ use App\Models\Wallet;
  */
 class ScrapeCooldown
 {
-    private const int SUCCESS_COOLDOWN_DAYS = 5;
+    private const int SUCCESS_COOLDOWN_DAYS = 10;
 
     private const int RETRY_AFTER_FAILURE_DAYS = 1;
 
